@@ -1,0 +1,60 @@
+                frustrated: 'Break down problems into smaller steps and provide more support.',
+                confused: 'Provide clear explanations, examples, and check understanding.',
+                bored: 'Incorporate games, stories, or real-world applications.',
+                anxious: 'Create a low-pressure environment with positive reinforcement.',
+                excited: 'Channel energy into challenging projects or creative applications.',
+                proud: 'Celebrate success and build on achievements with new challenges.'
+            };
+            return descriptions[emotion] || 'Adjust teaching approach based on ongoing assessment.';
+        }
+        
+        function getEmpatheticResponse(emotion, intensity) {
+            const responses = {
+                engaged: "I love how focused you are! That kind of engagement leads to deep learning.",
+                confident: "Your confidence is well-earned! You've put in the work to understand this.",
+                frustrated: "It's completely normal to feel frustrated with challenging material. Every expert was once a beginner.",
+                confused: "Confusion is often the first step toward understanding. Let's work through this together.",
+                bored: "I get it - sometimes material can feel repetitive. Let's find a way to make it fresh!",
+                anxious: "Learning can feel stressful, but remember: mistakes are how we grow. There's no pressure here.",
+                excited: "Your excitement makes teaching so rewarding! Let's harness that energy for learning.",
+                proud: "You should feel proud! Recognizing your own progress is a key part of learning."
+            };
+            return responses[emotion] || "I'm here to support your learning journey every step of the way.";
+        }
+        
+        // Initialize
+        updateLog('Demo interface loaded. Ready for interactions.');
+        
+        // Add CSS for spinner
+        const style = document.createElement('style');
+        style.textContent = `
+            .spinner {
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #667eea;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 15px;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .emotion-engaged { color: #28a745; }
+            .emotion-confident { color: #17a2b8; }
+            .emotion-frustrated { color: #dc3545; }
+            .emotion-confused { color: #ffc107; }
+            .emotion-bored { color: #6c757d; }
+            .emotion-anxious { color: #fd7e14; }
+            .emotion-excited { color: #e83e8c; }
+            .emotion-flow { color: #6610f2; }
+            .emotion-fatigued { color: #6f42c1; }
+            .emotion-proud { color: #20c997; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
