@@ -1186,6 +1186,85 @@ border-radius:8px;
 
 .target-number{font-size:48px;font-weight:900;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
 
+/* ===== FUTURISTIC GAME UPGRADES ===== */
+/* Progress Pips */
+.gp-round-pips{display:flex;gap:5px;align-items:center;justify-content:center;padding:6px 20px 4px;background:rgba(0,0,0,0.1)}
+.gp-round-pip{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.gp-round-pip.done{background:var(--lime);border-color:var(--lime);box-shadow:0 0 8px rgba(0,255,136,0.6);transform:scale(0.85)}
+.gp-round-pip.current{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px rgba(0,245,255,0.7);transform:scale(1.3);animation:pipPulse 1.2s ease-in-out infinite}
+.gp-round-pip.boss{background:linear-gradient(135deg,#ff4444,#ff8800)!important;border-color:#ff6644!important;box-shadow:0 0 10px rgba(255,68,68,0.7)!important;transform:scale(1.1)}
+@keyframes pipPulse{0%,100%{box-shadow:0 0 12px rgba(0,245,255,0.7)}50%{box-shadow:0 0 20px rgba(0,245,255,1),0 0 35px rgba(0,245,255,0.4)}}
+
+/* Power-Up Popup */
+.power-up-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9995;background:rgba(8,8,24,0.97);backdrop-filter:blur(24px);border:2px solid rgba(0,245,255,0.35);border-radius:22px;padding:28px 36px;text-align:center;box-shadow:0 0 70px rgba(0,245,255,0.25),0 20px 60px rgba(0,0,0,0.6);animation:puPopIn 0.45s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes puPopIn{0%{opacity:0;transform:translate(-50%,-50%) scale(0.2) rotate(-8deg)}80%{transform:translate(-50%,-50%) scale(1.05)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+.pup-header{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--magenta);font-weight:800;margin-bottom:10px}
+.pup-icon{font-size:60px;margin:6px 0 4px;animation:novaFloat 1.5s ease-in-out infinite}
+.pup-name{font-size:22px;font-weight:900;margin-bottom:6px}
+.pup-desc{font-size:13px;color:var(--text-secondary);line-height:1.5}
+
+/* Active Power-Up Badge */
+.active-pu-badge{position:absolute;top:52px;right:12px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.35);color:#c4b5fd;display:flex;align-items:center;gap:5px;z-index:10;animation:fadeSlide 0.3s ease}
+
+/* Boss Round */
+.boss-round-alert{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9994;text-align:center;pointer-events:none;animation:bossAlertIn 0.6s ease-out forwards}
+@keyframes bossAlertIn{0%{opacity:0;transform:translate(-50%,-50%) scale(0.3)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}75%{transform:translate(-50%,-50%) scale(0.93)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.bra-text{font-size:40px;font-weight:900;background:linear-gradient(135deg,#ff4444,#ff8800,#ffcc00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:3px;text-shadow:none;filter:drop-shadow(0 0 20px rgba(255,100,0,0.5))}
+.bra-sub{font-size:15px;font-weight:700;color:#ff8844;margin-top:8px}
+.boss-indicator{display:none;align-items:center;gap:6px;font-size:10px;font-weight:800;color:#ff7744;letter-spacing:1px;text-transform:uppercase;animation:bossGlow 1.5s ease-in-out infinite}
+.boss-indicator.show{display:flex}
+@keyframes bossGlow{0%,100%{opacity:1;text-shadow:0 0 8px rgba(255,100,0,0.5)}50%{opacity:0.6;text-shadow:0 0 20px rgba(255,100,0,0.9)}}
+.gp-content.boss-active{border:1px solid rgba(255,68,68,0.2);box-shadow:inset 0 0 40px rgba(255,50,0,0.06)}
+
+/* Pattern Quest Visual Shapes */
+.pq-sequence{display:flex;align-items:flex-end;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px 0 20px}
+.pq-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pq-shape{width:54px;height:54px;display:flex;align-items:center;justify-content:center;animation:pqShapeIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4))}
+.pq-shape.s-circle{border-radius:50%}
+.pq-shape.s-square{border-radius:10px}
+.pq-shape.s-triangle{clip-path:polygon(50% 0%,100% 100%,0% 100%);border-radius:0}
+.pq-shape.s-diamond{clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);border-radius:0}
+.pq-shape.s-star{clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);border-radius:0}
+.pq-shape.s-question{border-radius:12px;background:rgba(0,245,255,0.08)!important;border:2px dashed rgba(0,245,255,0.4);font-size:28px;font-weight:900;color:var(--cyan)}
+.pq-label{font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.pq-arrow{font-size:18px;color:rgba(255,255,255,0.15);align-self:center;margin-bottom:20px}
+@keyframes pqShapeIn{0%{opacity:0;transform:scale(0.2) rotate(-20deg)}65%{transform:scale(1.12) rotate(4deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.pq-options-visual{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.pq-opt-btn{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 18px;border-radius:16px;cursor:pointer;background:rgba(255,255,255,0.03);border:2px solid rgba(255,255,255,0.08);transition:all 0.22s ease;user-select:none}
+.pq-opt-btn:hover{transform:scale(1.08) translateY(-3px);border-color:rgba(0,245,255,0.35);background:rgba(0,245,255,0.05);box-shadow:0 8px 24px rgba(0,245,255,0.15)}
+.pq-opt-btn.correct{border-color:var(--lime);background:rgba(0,255,136,0.12);animation:popCorrect 0.4s ease}
+.pq-opt-btn.wrong{border-color:#ff4444;background:rgba(255,68,68,0.12);animation:shake 0.4s ease}
+.pq-opt-btn.disabled{pointer-events:none;opacity:0.35}
+.pq-opt-label{font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:capitalize}
+
+/* Enhanced Game Cards */
+.gc-scan{position:absolute;top:0;left:-100%;width:35%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);transform:skewX(-20deg);animation:gcScan 3.5s ease-in-out infinite;pointer-events:none;z-index:3}
+@keyframes gcScan{0%,20%{left:-60%}100%{left:160%}}
+.game-card:nth-child(2) .gc-scan{animation-delay:0.7s}
+.game-card:nth-child(3) .gc-scan{animation-delay:1.4s}
+.game-card:nth-child(4) .gc-scan{animation-delay:2.1s}
+.game-card:nth-child(5) .gc-scan{animation-delay:2.8s}
+.gc-play-btn{position:absolute;bottom:14px;right:14px;padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-size:11px;font-weight:800;border:none;cursor:pointer;opacity:0;transition:all 0.3s;z-index:5;pointer-events:none;letter-spacing:0.5px}
+.game-card:hover .gc-play-btn{opacity:1;pointer-events:auto;transform:scale(1.05)}
+.game-card:nth-child(1){animation-delay:0s}
+.game-card:nth-child(2){animation-delay:0.06s}
+.game-card:nth-child(3){animation-delay:0.12s}
+.game-card:nth-child(4){animation-delay:0.18s}
+.game-card:nth-child(5){animation-delay:0.24s}
+@keyframes cardIn{0%{opacity:0;transform:translateY(24px) scale(0.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Speed challenge urgency visual */
+.speed-urgency-bar{width:100%;max-width:420px;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin:0 auto 8px}
+.speed-urgency-fill{height:100%;width:100%;border-radius:3px;transition:width 1s linear,background 0.5s;background:var(--lime)}
+
+/* Sound feedback pulse on correct */
+@keyframes correctPulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,0.6)}70%{box-shadow:0 0 0 20px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+.gp-option.correct,.pq-opt-btn.correct{animation:popCorrect 0.4s ease,correctPulse 0.6s ease 0.1s}
+
+/* Combo display in HUD */
+.gp-combo{font-size:11px;font-weight:800;color:var(--magenta);min-width:40px;text-align:center;transition:all 0.3s}
+@keyframes comboIn{0%{transform:scale(0.5) rotate(-10deg);opacity:0}60%{transform:scale(1.3) rotate(3deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+
 .pipeline{display:flex;align-items:center;gap:4px;padding:16px;overflow-x:auto;border-radius:16px;background:rgba(0,245,255,0.02);border:1px solid rgba(0,245,255,0.1)}
 .pipeline-step{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);transition:all 0.3s}
 .pipeline-step.active{border-color:var(--cyan);background:rgba(0,245,255,0.06)}
@@ -2086,16 +2165,19 @@ transition:color 0.2s;
 </div>
 
 <div class="game-play-area" id="gamePlayArea">
-<div class="gp-topbar">
+<div class="gp-topbar" id="gpTopbar">
 <button class="gp-back" onclick="exitGame()">&larr; Back</button>
 <div class="gp-title" id="gpTitle">Game</div>
+<div class="boss-indicator" id="bossIndicator">⚠️ BOSS ROUND</div>
 <div class="gp-info">
+<div class="gp-combo" id="gpCombo"></div>
 <div class="gp-round" id="gpRound">1 / 10</div>
 <div class="gp-timer" id="gpTimer">--</div>
 <div class="gp-score" id="gpScore">0</div>
 <div class="gp-streak" id="gpStreak"></div>
 </div>
 </div>
+<div class="gp-round-pips" id="gpPips"></div>
 <div class="gp-content" id="gpContent"></div>
 </div>
 
@@ -3970,8 +4052,10 @@ function renderGameSelect() {
         const desc = ag === 'tiny' ? g.descTiny : (ag === 'rising' ? g.descRising : g.desc);
         const hs = localStorage.getItem('hs_' + g.id);
         const img = GAME_IMAGES[g.id] || '';
-        return `<div class="game-card" onclick="launchGame('${g.id}')">
+        const diffStars = g.cat === 'speed' ? '★★★★★' : g.cat === 'pattern' ? '★★★★☆' : '★★★☆☆';
+        return `<div class="game-card" onclick="launchGame('${g.id}')" style="animation:cardIn 0.4s ease-out both">
             <div class="gc-glow ${g.cat}"></div>
+            <div class="gc-scan"></div>
             ${hs ? `<div class="gc-highscore">🏆 ${hs}</div>` : ''}
             <div class="gc-banner ${g.cat}">
                 ${img ? `<img class="gc-banner-img" src="${img}" alt="" loading="lazy">` : ''}
@@ -3979,21 +4063,31 @@ function renderGameSelect() {
             </div>
             <div class="gc-body">
                 <div class="gc-title">${g.title}</div>
+                <div style="font-size:10px;color:var(--magenta);letter-spacing:1px;margin-bottom:4px">${diffStars}</div>
                 <div class="gc-desc">${desc}</div>
                 <div class="gc-tags">${g.tags.map(t => `<span class="gc-tag">${t}</span>`).join('')}<span class="gc-tag xp">+${g.xp} XP</span></div>
             </div>
+            <button class="gc-play-btn">▶ PLAY NOW</button>
         </div>`;
     }).join('');
 }
 
 function launchGame(gameId) {
     gState = {game:gameId,round:0,total:10,score:0,streak:0,bestStreak:0,correct:0,timer:null,timerVal:0,answered:false,questions:[]};
+    gActivePowerUp = null;
+    const badge = document.getElementById('activePuBadge');
+    if (badge) badge.remove();
     const def = GAME_DEFS.find(g => g.id === gameId);
     document.getElementById('gameSelectView').style.display = 'none';
     document.getElementById('gamePlayArea').classList.add('active');
     document.getElementById('gpTitle').textContent = def ? def.title : 'Game';
     document.getElementById('gpScore').textContent = '0';
     document.getElementById('gpStreak').textContent = '';
+    const combo = document.getElementById('gpCombo');
+    if (combo) combo.textContent = '';
+    const bossInd = document.getElementById('bossIndicator');
+    if (bossInd) bossInd.classList.remove('show');
+    gameAudio.play('start');
     novaReact('gameStart');
 
     if (gameId === 'number_lab') setupNumberLab();
@@ -4014,6 +4108,22 @@ function updateGameHUD() {
     document.getElementById('gpRound').textContent = `${gState.round} / ${gState.total}`;
     document.getElementById('gpScore').textContent = gState.score;
     document.getElementById('gpStreak').textContent = gState.streak >= 2 ? `${icon('zap',12)} ${gState.streak}x` : '';
+    // Combo badge
+    const combo = document.getElementById('gpCombo');
+    if (combo) {
+        if (gState.streak >= 5) { combo.textContent = `🔥 ${gState.streak}×`; combo.style.color = '#fbbf24'; combo.style.animation = 'comboIn 0.3s ease-out'; }
+        else if (gState.streak >= 3) { combo.textContent = `⚡ ${gState.streak}×`; combo.style.color = 'var(--magenta)'; combo.style.animation = 'comboIn 0.3s ease-out'; }
+        else { combo.textContent = ''; combo.style.animation = ''; }
+    }
+    renderRoundPips();
+    // Boss round HUD
+    const boss = isBossRound();
+    const topbar = document.getElementById('gpTopbar');
+    const bossInd = document.getElementById('bossIndicator');
+    const gpContent = document.getElementById('gpContent');
+    if (topbar) topbar.classList.toggle('boss-active', boss);
+    if (bossInd) bossInd.classList.toggle('show', boss);
+    if (gpContent) gpContent.classList.toggle('boss-active', boss);
 }
 
 function startRoundTimer(sec) {
@@ -4022,10 +4132,22 @@ function startRoundTimer(sec) {
     const el = document.getElementById('gpTimer');
     el.textContent = sec;
     el.style.color = 'var(--magenta)';
+    // Update speed urgency bar if present
+    const urgencyFill = document.getElementById('speedUrgencyFill');
     gState.timer = setInterval(() => {
         gState.timerVal--;
         el.textContent = Math.max(0, gState.timerVal);
-        if (gState.timerVal <= 5) el.style.color = '#ff4444';
+        if (gState.timerVal <= 5) {
+            el.style.color = '#ff4444';
+            gameAudio.play('tick');
+            el.style.transform = 'scale(1.15)';
+            setTimeout(() => { el.style.transform = ''; }, 200);
+        }
+        if (urgencyFill) {
+            const pct = Math.max(0, (gState.timerVal / sec) * 100);
+            urgencyFill.style.width = pct + '%';
+            urgencyFill.style.background = pct > 50 ? 'var(--lime)' : pct > 25 ? '#fbbf24' : '#ef4444';
+        }
         if (gState.timerVal <= 0) {
             clearInterval(gState.timer);
             if (!gState.answered) handleGameTimeout();
@@ -4048,11 +4170,20 @@ function advanceRound() {
     }
     gState.answered = false;
     updateGameHUD();
-    if (gState.game === 'number_lab') renderNumberLabRound();
-    else if (gState.game === 'word_forge') renderWordForgeRound();
-    else if (gState.game === 'science_lab') renderScienceLabRound();
-    else if (gState.game === 'pattern_quest') renderPatternQuestRound();
-    else if (gState.game === 'speed_challenge') renderSpeedRound();
+    const wasBoss = isBossRound();
+    const doRender = () => {
+        if (gState.game === 'number_lab') renderNumberLabRound();
+        else if (gState.game === 'word_forge') renderWordForgeRound();
+        else if (gState.game === 'science_lab') renderScienceLabRound();
+        else if (gState.game === 'pattern_quest') renderPatternQuestRound();
+        else if (gState.game === 'speed_challenge') renderSpeedRound();
+    };
+    if (wasBoss) {
+        showBossRoundAlert();
+        setTimeout(doRender, 1400);
+    } else {
+        doRender();
+    }
 }
 
 function scoreAnswer(correct) {
@@ -4062,16 +4193,35 @@ function scoreAnswer(correct) {
         gState.correct++;
         gState.streak++;
         if (gState.streak > gState.bestStreak) gState.bestStreak = gState.streak;
-        const bonus = gState.streak >= 3 ? 50 : 0;
+        const streakBonus = gState.streak >= 3 ? 50 : 0;
         const timeBonus = Math.round(gState.timerVal * 3);
-        gState.score += 100 + bonus + timeBonus;
+        const bossBonus = isBossRound() ? 100 : 0;
+        let baseScore = 100 + streakBonus + timeBonus + bossBonus;
+        // Double XP power-up
+        if (gActivePowerUp === 'double') {
+            baseScore *= 2;
+            showFloatMsg('2× XP! ⚡', '#fbbf24');
+            gActivePowerUp = null;
+            updatePowerUpBadge(null);
+        }
+        gState.score += baseScore;
         showScreenFlash('correct');
+        gameAudio.play(gState.streak >= 3 ? 'streak' : 'correct');
         novaReact(gState.streak >= 3 ? 'streak' : 'correct');
         if (gState.streak >= 3) showStarburst(window.innerWidth/2, window.innerHeight/2);
-        showFloatingXP(100 + bonus + timeBonus);
+        showFloatingXP(baseScore);
+        checkPowerUpTrigger();
     } else {
-        gState.streak = 0;
+        // Shield power-up
+        if (gActivePowerUp === 'shield') {
+            showFloatMsg('Streak protected! 🛡️', '#a78bfa');
+            gActivePowerUp = null;
+            updatePowerUpBadge(null);
+        } else {
+            gState.streak = 0;
+        }
         showScreenFlash('wrong');
+        gameAudio.play('wrong');
         novaReact('wrong');
     }
     updateGameHUD();
@@ -4852,6 +5002,48 @@ function checkScienceAnswer(el, chosen, correct) {
 }
 
 // === PATTERN QUEST ===
+const PQ_SHAPE_DEFS = [
+    {key:'circle',cls:'s-circle',color:'#00f5ff',label:'circle'},
+    {key:'square',cls:'s-square',color:'#ff00ff',label:'square'},
+    {key:'triangle',cls:'s-triangle',color:'#00ff88',label:'triangle'},
+    {key:'diamond',cls:'s-diamond',color:'#fbbf24',label:'diamond'},
+    {key:'star',cls:'s-star',color:'#8b5cf6',label:'star'},
+];
+const PQ_COLOR_DEFS = [
+    {key:'red',hex:'#ef4444'},{key:'blue',hex:'#3b82f6'},{key:'green',hex:'#22c55e'},
+    {key:'yellow',hex:'#eab308'},{key:'purple',hex:'#8b5cf6'},{key:'cyan',hex:'#00f5ff'},
+];
+
+function pqShapeHTML(key, delay, size) {
+    const s = size || 54;
+    const def = PQ_SHAPE_DEFS.find(d => d.key === key);
+    if (!def) return '';
+    return `<div class="pq-shape ${def.cls}" style="background:${def.color};width:${s}px;height:${s}px;animation-delay:${delay||0}s;box-shadow:0 0 18px ${def.color}55"></div>`;
+}
+
+function pqColorHTML(key, delay, size) {
+    const s = size || 54;
+    const def = PQ_COLOR_DEFS.find(d => d.key === key);
+    if (!def) return '';
+    return `<div class="pq-shape s-circle" style="background:${def.hex};width:${s}px;height:${s}px;animation-delay:${delay||0}s;box-shadow:0 0 18px ${def.hex}66"></div>`;
+}
+
+function pqBuildSequenceHTML(items, renderFn) {
+    return items.map((key, i) => `
+        <div class="pq-item">
+            ${renderFn(key, i * 0.07)}
+            <div class="pq-label">${key}</div>
+        </div>
+        ${i < items.length - 1 ? '<div class="pq-arrow">→</div>' : ''}
+    `).join('') + `
+        <div class="pq-arrow">→</div>
+        <div class="pq-item">
+            <div class="pq-shape s-question" style="width:54px;height:54px;animation-delay:${items.length * 0.07}s">?</div>
+            <div class="pq-label">?</div>
+        </div>
+    `;
+}
+
 function setupPatternQuest() {
     gState.total = 10;
     gState.round = 0;
@@ -4861,49 +5053,135 @@ function setupPatternQuest() {
 function renderPatternQuestRound() {
     const ag = getAgeGroup();
     const content = document.getElementById('gpContent');
-    let q, opts, answer;
 
     if (ag === 'tiny') {
-        const patterns = [
-            {seq:['circle','square','circle','square'], next:'circle', opts:['circle','triangle','square']},
-            {seq:['red','blue','red','blue'], next:'red', opts:['red','green','blue']},
-            {seq:['big','small','big','small'], next:'big', opts:['big','medium','small']},
-            {seq:['1','2','1','2'], next:'1', opts:['1','3','2']},
-            {seq:['A','B','A','B'], next:'A', opts:['A','C','B']},
+        // Visual shape/color patterns
+        const visualPatterns = [
+            {type:'shape',seq:['circle','square','circle','square'],next:'circle',opts:['circle','triangle','square']},
+            {type:'shape',seq:['star','circle','star','circle'],next:'star',opts:['star','diamond','circle']},
+            {type:'shape',seq:['triangle','square','triangle','square'],next:'triangle',opts:['triangle','circle','square']},
+            {type:'color',seq:['red','blue','red','blue'],next:'red',opts:['red','green','blue']},
+            {type:'color',seq:['green','yellow','green','yellow'],next:'green',opts:['green','purple','yellow']},
+            {type:'shape',seq:['diamond','star','diamond','star'],next:'diamond',opts:['diamond','circle','star']},
+            {type:'color',seq:['cyan','red','cyan','red'],next:'cyan',opts:['cyan','green','red']},
         ];
-        const p = patterns[gState.round % patterns.length];
-        q = `What comes next? ${p.seq.join(' \u2192 ')} \u2192 ?`;
-        answer = p.next;
-        opts = p.opts.sort(() => Math.random() - 0.5);
+        const p = visualPatterns[gState.round % visualPatterns.length];
+        const answer = p.next;
+        const opts = p.opts.sort(() => Math.random() - 0.5);
+        const renderFn = p.type === 'shape' ? pqShapeHTML : pqColorHTML;
+
+        content.innerHTML = `
+            ${gameNovaHTML('What comes next?')}
+            <div class="gp-question">What comes next in the pattern?</div>
+            <div class="pq-sequence">${pqBuildSequenceHTML(p.seq, renderFn)}</div>
+            <div class="pq-options-visual">
+                ${opts.map(o => {
+                    const shapeDef = p.type === 'shape'
+                        ? PQ_SHAPE_DEFS.find(d => d.key === o)
+                        : null;
+                    const colorDef = p.type === 'color'
+                        ? PQ_COLOR_DEFS.find(d => d.key === o)
+                        : null;
+                    const bg = shapeDef ? shapeDef.color : (colorDef ? colorDef.hex : '#fff');
+                    const cls = shapeDef ? shapeDef.cls : 's-circle';
+                    return `<div class="pq-opt-btn" onclick="checkPatternAnswerVisual(this,'${o}','${answer}')">
+                        <div class="pq-shape ${cls}" style="background:${bg};width:44px;height:44px;box-shadow:0 0 14px ${bg}55;animation:none"></div>
+                        <div class="pq-opt-label">${o}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div class="gp-hint">Tap the shape that comes next!</div>`;
+        startRoundTimer(22);
+
     } else if (ag === 'rising') {
+        // Numeric sequences with visual number display
         const step = Math.floor(Math.random()*5)+2;
         const start = Math.floor(Math.random()*10)+1;
         const seq = [];
         for (let i = 0; i < 5; i++) seq.push(start + step * i);
         const next = start + step * 5;
-        answer = next;
-        opts = [next, next+step, next-step, next+1].filter((v,i,a) => a.indexOf(v)===i).sort(() => Math.random()-0.5);
+        const answer = next;
+        let opts = [next, next+step, next-step, next+1].filter((v,i,a) => v > 0 && a.indexOf(v)===i).sort(() => Math.random()-0.5);
         if (opts.length < 4) opts.push(next + 2);
-        q = `${seq.join(', ')}, ?`;
-    } else {
-        const step = Math.floor(Math.random()*4)+2;
-        const start = Math.floor(Math.random()*5)+1;
-        const seq = [];
-        for (let i = 0; i < 4; i++) seq.push(start + step * i);
-        const next = start + step * 4;
-        answer = next;
-        opts = [next, next+1, next-1, next+step].filter((v,i,a) => a.indexOf(v)===i).sort(() => Math.random()-0.5);
-        q = `${seq.join(', ')}, ?`;
-    }
+        opts = opts.slice(0, 4);
 
-    content.innerHTML = `
-        <div style="font-size:36px;margin-bottom:8px">${icon('brain', 36)}</div>
-        <div class="gp-question">${q}</div>
-        <div class="gp-options">${opts.map(o =>
-            `<div class="gp-option" onclick="checkPatternAnswer(this, '${o}', '${answer}')">${o}</div>`
-        ).join('')}</div>
-        <div class="gp-hint">Find the pattern!</div>`;
-    startRoundTimer(ag === 'tiny' ? 20 : (ag === 'rising' ? 12 : 15));
+        const colors = ['#00f5ff','#ff00ff','#00ff88','#fbbf24','#8b5cf6'];
+        content.innerHTML = `
+            ${gameNovaHTML('Find the pattern!')}
+            <div class="gp-question">What number comes next?</div>
+            <div class="pq-sequence" style="gap:6px">
+                ${seq.map((n, i) => `
+                    <div class="pq-item">
+                        <div class="pq-shape s-circle" style="background:${colors[i % colors.length]};width:54px;height:54px;font-size:18px;font-weight:900;color:#000;animation-delay:${i*0.07}s;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px ${colors[i % colors.length]}66">${n}</div>
+                    </div>
+                    ${i < seq.length - 1 ? '<div class="pq-arrow">→</div>' : ''}
+                `).join('')}
+                <div class="pq-arrow">→</div>
+                <div class="pq-item">
+                    <div class="pq-shape s-question" style="width:54px;height:54px;animation-delay:${seq.length*0.07}s">?</div>
+                </div>
+            </div>
+            <div class="gp-hint" style="margin-bottom:8px">Each step adds the same number. Find the rule!</div>
+            <div class="gp-options">${opts.map(o =>
+                `<div class="gp-option" onclick="checkPatternAnswer(this, '${o}', '${answer}')">${o}</div>`
+            ).join('')}</div>`;
+        startRoundTimer(15);
+
+    } else {
+        // Standard: numeric sequence with more complex patterns
+        const patterns = [
+            () => { const s=Math.floor(Math.random()*4)+2,st=Math.floor(Math.random()*5)+1,seq=[]; for(let i=0;i<4;i++) seq.push(st+s*i); return {seq,next:st+s*4,type:'arithmetic',rule:`+${s}`}; },
+            () => { const st=Math.floor(Math.random()*3)+2,seq=[]; for(let i=0;i<4;i++) seq.push(Math.pow(st,i+1)); const n=Math.pow(st,5); return {seq,next:n,type:'power',rule:`×${st}`}; },
+            () => { const s=Math.floor(Math.random()*3)+2,st=Math.floor(Math.random()*5)+2,seq=[st]; for(let i=1;i<4;i++) seq.push(seq[i-1]*s); return {seq,next:seq[3]*s,type:'geometric',rule:`×${s}`}; },
+        ];
+        const p = patterns[gState.round % patterns.length]();
+        if (!p.seq.every(v => isFinite(v) && v < 10000)) {
+            // fallback to arithmetic
+            const s=3,st=2,seq=[]; for(let i=0;i<4;i++) seq.push(st+s*i);
+            Object.assign(p, {seq,next:st+s*4,rule:'+3'});
+        }
+        const answer = p.next;
+        let opts = [answer, answer+1, answer-1, answer + parseInt(p.rule.replace(/[^0-9]/g,''))||answer+2]
+            .filter((v,i,a) => v > 0 && isFinite(v) && a.indexOf(v)===i)
+            .sort(() => Math.random()-0.5)
+            .slice(0,4);
+        if (!opts.includes(answer)) opts[0] = answer;
+
+        const colors = ['#00f5ff','#8b5cf6','#ff00ff','#fbbf24'];
+        content.innerHTML = `
+            ${gameNovaHTML('Crack the code!')}
+            <div class="gp-question">What number continues the sequence?</div>
+            <div class="pq-sequence" style="gap:6px">
+                ${p.seq.map((n, i) => `
+                    <div class="pq-item">
+                        <div class="pq-shape s-square" style="background:${colors[i % colors.length]};width:54px;height:54px;font-size:17px;font-weight:900;color:#000;animation-delay:${i*0.07}s;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px ${colors[i % colors.length]}55">${n}</div>
+                    </div>
+                    ${i < p.seq.length - 1 ? `<div class="pq-arrow" style="font-size:14px;opacity:0.5">${p.rule}</div>` : ''}
+                `).join('')}
+                <div class="pq-arrow">${p.rule}</div>
+                <div class="pq-item">
+                    <div class="pq-shape s-question" style="width:54px;height:54px;animation-delay:${p.seq.length*0.07}s">?</div>
+                </div>
+            </div>
+            <div class="gp-hint" style="margin-bottom:8px">Rule: ${p.rule} each time</div>
+            <div class="gp-options">${opts.map(o =>
+                `<div class="gp-option" onclick="checkPatternAnswer(this, '${o}', '${answer}')">${o}</div>`
+            ).join('')}</div>`;
+        startRoundTimer(18);
+    }
+}
+
+function checkPatternAnswerVisual(el, chosen, correct) {
+    if (gState.answered) return;
+    document.querySelectorAll('.pq-opt-btn').forEach(o => o.classList.add('disabled'));
+    if (String(chosen) === String(correct)) {
+        el.classList.add('correct');
+        scoreAnswer(true);
+    } else {
+        el.classList.add('wrong');
+        document.querySelectorAll('.pq-opt-btn').forEach(o => { if (o.querySelector('.pq-opt-label')?.textContent === correct) o.classList.add('correct'); });
+        scoreAnswer(false);
+    }
 }
 
 function checkPatternAnswer(el, chosen, correct) {
@@ -4970,6 +5248,7 @@ function renderSpeedRound() {
     const content = document.getElementById('gpContent');
 
     content.innerHTML = `
+        <div class="speed-urgency-bar"><div class="speed-urgency-fill" id="speedUrgencyFill" style="width:100%"></div></div>
         <div style="font-size:36px;margin-bottom:8px">${icon('zap', 36)}</div>
         <div class="gp-question">${q.q}</div>
         <div class="gp-options">${q.opts.map(o =>
@@ -4992,6 +5271,149 @@ function checkSpeedAnswer(el, chosen, correct) {
 }
 
 function connectGameWs() { renderGameSelect(); }
+
+// ===== FUTURISTIC GAME UPGRADES =====
+
+// --- Web Audio Sound System ---
+const gameAudio = {
+    ctx: null,
+    init() {
+        if (!this.ctx) {
+            try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    },
+    play(type) {
+        this.init();
+        if (!this.ctx) return;
+        const seqs = {
+            correct: [{f:523,t:0,d:0.09,tp:'sine'},{f:659,t:0.08,d:0.09,tp:'sine'},{f:784,t:0.16,d:0.14,tp:'sine'}],
+            wrong: [{f:220,t:0,d:0.18,tp:'sawtooth'},{f:160,t:0.14,d:0.25,tp:'sawtooth'}],
+            streak: [{f:523,t:0,d:0.07},{f:659,t:0.06,d:0.07},{f:784,t:0.12,d:0.07},{f:1047,t:0.19,d:0.22}],
+            tick: [{f:800,t:0,d:0.04,tp:'square'}],
+            start: [{f:330,t:0,d:0.09},{f:440,t:0.09,d:0.09},{f:550,t:0.18,d:0.18}],
+            powerup: [{f:440,t:0,d:0.06},{f:550,t:0.05,d:0.06},{f:660,t:0.10,d:0.06},{f:880,t:0.15,d:0.22}],
+            boss: [{f:110,t:0,d:0.28,tp:'sawtooth'},{f:165,t:0.22,d:0.28,tp:'sawtooth'},{f:220,t:0.42,d:0.38,tp:'sawtooth'}],
+        };
+        (seqs[type] || seqs.correct).forEach(n => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.type = n.tp || 'sine';
+            osc.frequency.value = n.f;
+            const now = this.ctx.currentTime;
+            gain.gain.setValueAtTime(0.13, now + n.t);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+            osc.start(now + n.t);
+            osc.stop(now + n.t + n.d + 0.02);
+        });
+    }
+};
+
+// --- Power-Up System ---
+const POWER_UPS = [
+    {id:'freeze',icon:'❄️',name:'Time Freeze',desc:'+15 seconds added to the clock!',color:'#00e5ff'},
+    {id:'double',icon:'⚡',name:'Double XP',desc:'Your next correct answer earns 2× XP!',color:'#fbbf24'},
+    {id:'shield',icon:'🛡️',name:'Streak Shield',desc:"Next wrong answer won't break your streak!",color:'#a78bfa'},
+];
+let gActivePowerUp = null;
+
+function checkPowerUpTrigger() {
+    if (gState.streak > 0 && gState.streak % 3 === 0 && !document.getElementById('powerUpPopup')) {
+        showPowerUpChoice();
+    }
+}
+
+function showPowerUpChoice() {
+    const pu = POWER_UPS[Math.floor(Math.random() * POWER_UPS.length)];
+    const popup = document.createElement('div');
+    popup.id = 'powerUpPopup';
+    popup.className = 'power-up-popup';
+    popup.innerHTML = `
+        <div class="pup-header">🎁 Power-Up Unlocked!</div>
+        <div class="pup-icon">${pu.icon}</div>
+        <div class="pup-name" style="color:${pu.color}">${pu.name}</div>
+        <div class="pup-desc">${pu.desc}</div>
+        <button class="gp-btn primary" onclick="activatePowerUp('${pu.id}')" style="margin-top:14px;width:100%">Activate! ${pu.icon}</button>
+    `;
+    document.body.appendChild(popup);
+    gameAudio.play('powerup');
+    setTimeout(() => { if (popup.parentNode) popup.remove(); }, 6000);
+}
+
+function activatePowerUp(type) {
+    const popup = document.getElementById('powerUpPopup');
+    if (popup) popup.remove();
+    gActivePowerUp = type;
+    const pu = POWER_UPS.find(p => p.id === type);
+    if (type === 'freeze') {
+        gState.timerVal = Math.min((gState.timerVal || 0) + 15, 60);
+        const el = document.getElementById('gpTimer');
+        if (el) el.textContent = gState.timerVal;
+        showFloatMsg('+15s ❄️', '#00e5ff');
+        gActivePowerUp = null;
+    } else if (type === 'double') {
+        showFloatMsg('2× XP ⚡ Ready!', '#fbbf24');
+    } else if (type === 'shield') {
+        showFloatMsg('Streak Shield 🛡️ Active!', '#a78bfa');
+    }
+    updatePowerUpBadge(gActivePowerUp, pu);
+}
+
+function updatePowerUpBadge(type, pu) {
+    let badge = document.getElementById('activePuBadge');
+    if (!type) { if (badge) badge.remove(); return; }
+    if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'activePuBadge';
+        badge.className = 'active-pu-badge';
+        const area = document.getElementById('gamePlayArea');
+        if (area) area.appendChild(badge);
+    }
+    if (pu) badge.innerHTML = pu.icon + ' ' + pu.name;
+}
+
+function showFloatMsg(msg, color) {
+    const el = document.createElement('div');
+    el.className = 'floating-xp';
+    el.textContent = msg;
+    el.style.left = window.innerWidth / 2 + 'px';
+    el.style.top = (window.innerHeight / 2 - 40) + 'px';
+    el.style.color = color || 'var(--cyan)';
+    el.style.fontSize = '20px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
+}
+
+// --- Boss Round ---
+function isBossRound() { return gState.total > 0 && gState.round === gState.total; }
+
+function showBossRoundAlert() {
+    const overlay = document.createElement('div');
+    overlay.className = 'boss-round-alert';
+    overlay.innerHTML = `<div class="bra-text">⚠️ BOSS ROUND ⚠️</div><div class="bra-sub">2× XP on a correct answer!</div>`;
+    document.body.appendChild(overlay);
+    gameAudio.play('boss');
+    setTimeout(() => overlay.remove(), 2200);
+}
+
+// --- Progress Pips ---
+function renderRoundPips() {
+    const pips = document.getElementById('gpPips');
+    if (!pips || !gState.total) return;
+    pips.innerHTML = Array.from({length: gState.total}, (_, i) => {
+        const n = i + 1;
+        const isDone = n < gState.round;
+        const isCurrent = n === gState.round;
+        const isBoss = n === gState.total;
+        let cls = 'gp-round-pip';
+        if (isDone) cls += ' done';
+        else if (isCurrent) cls += ' current';
+        if (isBoss) cls += ' boss';
+        return `<div class="${cls}" title="Round ${n}${isBoss?' - BOSS':''}"></div>`;
+    }).join('');
+}
 
 async function loadGamificationProfile() {
     const data = await apiCall('/gamification/profile');
