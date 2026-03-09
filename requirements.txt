@@ -14,3 +14,4 @@ numpy
 passlib
 PyJWT
 openai
+anthropic>=0.43.0
