@@ -1205,6 +1205,64 @@ border-radius:8px;
 @keyframes zoneEnter{0%{opacity:0;transform:scale(0.92) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 .tab-panel.active{animation:zoneEnter 0.35s ease-out}
 
+/* ===== NOVA PERSONALITY PANEL ===== */
+.nova-panel{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(139,92,246,0.10),rgba(0,245,255,0.06));border:1px solid rgba(139,92,246,0.25);border-radius:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.nova-panel::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,0.04),transparent);pointer-events:none}
+.nova-avatar-wrap{position:relative;flex-shrink:0}
+.nova-face{width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#a78bfa,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 20px rgba(139,92,246,0.5),0 0 40px rgba(139,92,246,0.2);animation:novaFloat 3s ease-in-out infinite;border:2px solid rgba(139,92,246,0.5)}
+.nova-mood-dot{position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#00ff88;border:2px solid var(--bg-primary);box-shadow:0 0 8px rgba(0,255,136,0.6)}
+.nova-mood-dot.thinking{background:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,0.6)}
+.nova-mood-dot.excited{background:#ff6b6b;animation:pipPulse 0.8s ease-in-out infinite}
+.nova-info{flex:1;min-width:0}
+.nova-name{font-size:16px;font-weight:800;background:linear-gradient(135deg,#a78bfa,#00f5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
+.nova-tagline{font-size:11px;color:var(--text-muted);margin-bottom:8px}
+.nova-memory-chips{display:flex;flex-wrap:wrap;gap:5px}
+.nova-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);font-size:11px;color:var(--text-secondary);cursor:pointer;transition:all 0.2s}
+.nova-chip:hover{background:rgba(139,92,246,0.3);transform:scale(1.05)}
+.nova-chip-add{background:rgba(0,245,255,0.10);border-color:rgba(0,245,255,0.3);color:var(--cyan)}
+
+/* ===== DISCOVERY LIBRARY ===== */
+.discovery-library{padding:0 0 20px}
+.dl-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px}
+.dl-title{font-size:20px;font-weight:900;background:linear-gradient(135deg,#fbbf24,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.dl-subtitle{font-size:12px;color:var(--text-muted);margin-top:2px}
+.dl-add-btn{padding:8px 16px;border-radius:20px;background:linear-gradient(135deg,rgba(0,245,255,0.15),rgba(139,92,246,0.15));border:1px solid rgba(0,245,255,0.3);color:var(--cyan);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.dl-add-btn:hover{background:rgba(0,245,255,0.25);transform:scale(1.04)}
+.dl-section{padding:0 16px 12px}
+.dl-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.passion-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.passion-card{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-size:13px;cursor:pointer;transition:all 0.25s;position:relative}
+.passion-card:hover{background:rgba(255,255,255,0.08);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.2)}
+.passion-card.top-passion{border-color:rgba(251,191,36,0.4);background:rgba(251,191,36,0.08)}
+.passion-card .pc-emoji{font-size:20px}
+.passion-card .pc-name{font-weight:600;color:var(--text-primary)}
+.passion-card .pc-remove{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#ef4444;border:none;color:#fff;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1}
+.passion-card:hover .pc-remove{display:flex}
+.passion-score-bar{height:3px;border-radius:2px;background:rgba(251,191,36,0.5);margin-top:4px;width:var(--score-w,40%)}
+.discovery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.discovery-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 10px;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+.discovery-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dc-color,var(--cyan))}
+.discovery-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.25);border-color:rgba(255,255,255,0.15)}
+.dc-emoji{font-size:30px;margin-bottom:6px;display:block}
+.dc-concept{font-size:11px;font-weight:700;color:var(--text-primary);margin-bottom:3px;line-height:1.3}
+.dc-subject{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px}
+.dl-empty{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:13px}
+.dl-empty-icon{font-size:40px;margin-bottom:8px}
+
+/* Add interest modal */
+.add-interest-modal{position:fixed;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)}
+.aim-box{background:var(--bg-secondary);border:1px solid rgba(139,92,246,0.4);border-radius:20px;padding:24px;width:min(380px,90vw);animation:puPopIn 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+.aim-title{font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:4px}
+.aim-sub{font-size:12px;color:var(--text-muted);margin-bottom:14px}
+.aim-input{width:100%;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-primary);font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box}
+.aim-input:focus{border-color:rgba(139,92,246,0.5)}
+.aim-suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.aim-sug{padding:5px 12px;border-radius:20px;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);font-size:12px;color:var(--text-secondary);cursor:pointer;transition:all 0.2s}
+.aim-sug:hover{background:rgba(139,92,246,0.3)}
+.aim-actions{display:flex;gap:8px}
+.aim-save{flex:1;padding:11px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#00e5ff);border:none;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+.aim-cancel{padding:11px 18px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);cursor:pointer}
+
 /* ===== QUEST BOARD (Learn Tab) ===== */
 .quest-board-header{padding:16px 20px 8px;display:flex;align-items:center;gap:12px}
 .qbh-title{font-size:calc(20px * var(--heading-scale));font-weight:900;background:linear-gradient(135deg,#fbbf24,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -2322,12 +2380,28 @@ transition:color 0.2s;
 </div>
 </div>
 <div style="flex:1;display:flex;flex-direction:column">
+
+<!-- Nova Personality Panel -->
+<div class="nova-panel" id="novaPanel">
+  <div class="nova-avatar-wrap">
+    <div class="nova-face" id="novaFace">⭐</div>
+    <div class="nova-mood-dot" id="novaMoodDot"></div>
+  </div>
+  <div class="nova-info">
+    <div class="nova-name">Nova ⭐</div>
+    <div class="nova-tagline" id="novaTagline">Your cosmic learning companion — tell me what you love!</div>
+    <div class="nova-memory-chips" id="novaMemoryChips">
+      <span class="nova-chip nova-chip-add" onclick="openAddInterestModal()">✨ Add what you love</span>
+    </div>
+  </div>
+</div>
+
 <div class="chat-header">
 <div class="chat-header-left">
 <div class="chat-status"></div>
 <div>
-<div class="chat-header-title">AI Tutor <span style="font-size:10px;color:var(--primary);margin-left:6px" id="aiPoweredBadge"><span class="ic" data-i="lightning" data-s="10"></span> AI Powered</span></div>
-<div class="chat-header-sub">Online • Socratic Mode</div>
+<div class="chat-header-title">🔮 Oracle <span style="font-size:10px;color:var(--primary);margin-left:6px" id="aiPoweredBadge"><span class="ic" data-i="lightning" data-s="10"></span> AI Powered</span></div>
+<div class="chat-header-sub">Nova is listening • Socratic Mode</div>
 </div>
 </div>
 <div class="chat-context">
@@ -2351,8 +2425,9 @@ transition:color 0.2s;
 <div class="msg-avatar"><span class="ic" data-i="robot" data-s="16"></span></div>
 <div class="msg-body">
 <div class="msg-bubble">
-<p>Hello! <span class="ic" data-i="wave" data-s="16"></span> I'm Nova, your AI tutor! I'm here to help you learn and grow. I use the <strong>Socratic method</strong> — that means I'll ask you guiding questions to help you discover the answers yourself!</p>
-<p>What would you like to explore today? You can ask me about <strong>math</strong>, <strong>science</strong>, <strong>reading</strong>, or <strong>coding</strong>. You can also use the <span class="ic" data-i="microphone" data-s="14"></span> microphone to talk to me!</p>
+<p>⭐ Hi! I'm <strong>Nova</strong> — I came from the stars and I've been exploring the universe, learning everything! My favourite thing is finding out what <em>you</em> love and making it part of our adventures together.</p>
+<p>WAIT — did you know I can use whatever you're obsessed with as examples for <strong>maths, science, reading</strong> and <strong>coding</strong>? Tell me something you love above ☝️ and I'll weave it into every lesson!</p>
+<p>What shall we explore today? 🚀</p>
 </div>
 <div class="msg-meta">
 <span class="meta-tag strategy"><span class="ic" data-i="target" data-s="10"></span> Welcome</span>
@@ -2404,6 +2479,32 @@ transition:color 0.2s;
 <div class="sync-indicator" id="syncIndicator"><span class="ic" data-i="sync" data-s="14"></span> Syncing offline data...</div>
 
 <div class="tab-panel" id="panel-knowledge">
+
+<!-- Discovery Library -->
+<div class="discovery-library" id="discoveryLibrary">
+  <div class="dl-header">
+    <div>
+      <div class="dl-title">🔭 My Discovery Library</div>
+      <div class="dl-subtitle">Things you love & everything you've explored</div>
+    </div>
+    <button class="dl-add-btn" onclick="openAddInterestModal()">✨ Add Interest</button>
+  </div>
+
+  <div class="dl-section">
+    <div class="dl-section-label">⭐ Your Passions <span id="passionCount" style="color:var(--cyan)">(0)</span></div>
+    <div class="passion-grid" id="passionGrid">
+      <div class="dl-empty"><div class="dl-empty-icon">🌱</div>Start chatting with Nova — she'll discover what you love!</div>
+    </div>
+  </div>
+
+  <div class="dl-section">
+    <div class="dl-section-label">🔍 Recent Discoveries <span id="discoveryCount" style="color:var(--lime)">(0)</span></div>
+    <div class="discovery-grid" id="discoveryGrid">
+      <div class="dl-empty" style="grid-column:1/-1"><div class="dl-empty-icon">🚀</div>Your discoveries will appear here as you learn!</div>
+    </div>
+  </div>
+</div>
+
 <div class="progress-dashboard" id="progressDashboard">
 <div class="progress-header">
 <h2><span class="ic" data-i="chart" data-s="22"></span> My Progress</h2>
@@ -3310,7 +3411,7 @@ function switchTab(tab) {
     document.querySelectorAll(`.tab-btn[data-tab="${tab}"]`).forEach(b => b.classList.add('active'));
     document.querySelectorAll(`.nav-item[data-tab="${tab}"]`).forEach(n => n.classList.add('active'));
     if (tab === 'worldmap') initWorldMapStars();
-    if (tab === 'knowledge') loadProgressDashboard();
+    if (tab === 'knowledge') { loadProgressDashboard(); loadInterestLibrary(true); }
     if (tab === 'games') connectGameWs();
     if (tab === 'learn') loadDailySchedule();
     if (tab === 'analytics') {
@@ -3342,6 +3443,207 @@ function showQuestCompleteBanner(questName, xp) {
     el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(10,10,30,0.96);border:2px solid #fbbf24;border-radius:20px;padding:30px 40px;text-align:center;animation:puPopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)';
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 2800);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// KNOWLEDGE LIBRARY & NOVA PERSONALITY
+// ═══════════════════════════════════════════════════════════════════════════
+
+let _interestLibrary = null; // cached library data
+
+const SUBJECT_COLORS = {math:'#fbbf24',science:'#00f5ff',reading:'#a78bfa',coding:'#00ff88',general:'#f87171'};
+
+const INTEREST_SUGGESTIONS = [
+    '🦕 dinosaurs','🚀 space','🦈 sharks','🐉 dragons','🌋 volcanoes',
+    '🤖 robots','⚗️ science','🎵 music','🎨 art','⛏️ minecraft',
+    '🏊 swimming','⚽ football','🍕 cooking','🧩 puzzles','🏰 castles',
+    '🏴‍☠️ pirates','🦸 superheroes','🌊 ocean','🦁 animals','✨ magic'
+];
+
+async function loadInterestLibrary(force = false) {
+    if (_interestLibrary && !force) return _interestLibrary;
+    try {
+        const data = await apiCall('/knowledge-library/profile');
+        if (data) {
+            _interestLibrary = data;
+            renderNovaPanel(data);
+            renderDiscoveryLibrary(data);
+        }
+        return data;
+    } catch(e) {
+        console.warn('Could not load interest library:', e);
+        return null;
+    }
+}
+
+function renderNovaPanel(data) {
+    const chips = document.getElementById('novaMemoryChips');
+    const tagline = document.getElementById('novaTagline');
+    if (!chips) return;
+
+    const allTopics = [
+        ...(data.passion_topics || []).slice(0,4),
+        ...(data.custom_interests || []).map(c => ({...c, score: 0.3}))
+    ].slice(0, 5);
+
+    if (allTopics.length > 0) {
+        const topNames = allTopics.map(t => t.topic).slice(0,3).join(', ');
+        if (tagline) tagline.textContent = `I know you love: ${topNames} — let's make everything about that! 🌟`;
+    }
+
+    const existing = chips.querySelectorAll('.nova-chip:not(.nova-chip-add)');
+    existing.forEach(e => e.remove());
+
+    allTopics.forEach(t => {
+        const chip = document.createElement('span');
+        chip.className = 'nova-chip';
+        chip.textContent = `${t.emoji || '✨'} ${t.topic}`;
+        chip.onclick = () => {
+            document.getElementById('chatInput').value = `Tell me something amazing about ${t.topic}!`;
+            switchTab('chat');
+            setTimeout(sendChatMessage, 100);
+        };
+        chips.insertBefore(chip, chips.querySelector('.nova-chip-add'));
+    });
+
+    if (allTopics.length === 0 && tagline) {
+        tagline.textContent = 'Your cosmic learning companion — tell me what you love!';
+    }
+}
+
+function renderDiscoveryLibrary(data) {
+    // Passions
+    const passionGrid = document.getElementById('passionGrid');
+    const passionCount = document.getElementById('passionCount');
+    const allTopics = [
+        ...(data.passion_topics || []),
+        ...(data.custom_interests || []).map(c => ({...c, score: 0.4}))
+    ];
+    // Deduplicate by topic name
+    const seen = new Set();
+    const unique = allTopics.filter(t => {
+        const key = (t.topic || '').toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+
+    if (passionCount) passionCount.textContent = `(${unique.length})`;
+
+    if (passionGrid) {
+        if (unique.length === 0) {
+            passionGrid.innerHTML = '<div class="dl-empty"><div class="dl-empty-icon">🌱</div>Start chatting with Nova — she\'ll discover what you love!</div>';
+        } else {
+            passionGrid.innerHTML = unique.map(t => {
+                const score = Math.min(1, t.score || 0.3);
+                const isTop = score >= 0.6;
+                return `<div class="passion-card ${isTop ? 'top-passion' : ''}" onclick="chatAbout('${t.topic}')">
+                    <button class="pc-remove" onclick="event.stopPropagation();removeInterest('${t.topic}')" title="Remove">×</button>
+                    <span class="pc-emoji">${t.emoji || '✨'}</span>
+                    <div>
+                        <div class="pc-name">${t.topic}</div>
+                        <div class="passion-score-bar" style="--score-w:${Math.round(score*100)}%"></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    // Discoveries
+    const discGrid = document.getElementById('discoveryGrid');
+    const discCount = document.getElementById('discoveryCount');
+    const discoveries = data.discoveries || [];
+    if (discCount) discCount.textContent = `(${discoveries.length})`;
+
+    if (discGrid) {
+        if (discoveries.length === 0) {
+            discGrid.innerHTML = '<div class="dl-empty" style="grid-column:1/-1"><div class="dl-empty-icon">🚀</div>Your discoveries will appear here as you learn!</div>';
+        } else {
+            discGrid.innerHTML = discoveries.slice(0,20).map(d => {
+                const color = SUBJECT_COLORS[d.subject] || SUBJECT_COLORS.general;
+                return `<div class="discovery-card" style="--dc-color:${color}" onclick="chatAbout('${d.concept}')">
+                    <span class="dc-emoji">${d.emoji || '🔍'}</span>
+                    <div class="dc-concept">${d.concept}</div>
+                    <div class="dc-subject">${d.subject || 'discovery'}</div>
+                </div>`;
+            }).join('');
+        }
+    }
+}
+
+function chatAbout(topic) {
+    document.getElementById('chatInput').value = `Tell me something amazing and surprising about ${topic}!`;
+    switchTab('chat');
+    setTimeout(sendChatMessage, 100);
+}
+
+async function removeInterest(topic) {
+    await apiCall(`/knowledge-library/interest/${encodeURIComponent(topic)}`, 'DELETE');
+    _interestLibrary = null;
+    loadInterestLibrary(true);
+}
+
+function openAddInterestModal() {
+    // Remove existing modal if any
+    document.getElementById('addInterestModal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'addInterestModal';
+    modal.className = 'add-interest-modal';
+    modal.innerHTML = `
+        <div class="aim-box">
+            <div class="aim-title">✨ What do you love?</div>
+            <div class="aim-sub">Tell Nova and she'll make every lesson about it!</div>
+            <input class="aim-input" id="aimInput" placeholder="e.g. dinosaurs, space, sharks..." maxlength="40"
+                   onkeydown="if(event.key==='Enter')saveInterest()">
+            <div class="aim-suggestions">${INTEREST_SUGGESTIONS.map(s =>
+                `<span class="aim-sug" onclick="document.getElementById('aimInput').value='${s.replace(/[^\w\s]/g,'').trim()}'">${s}</span>`
+            ).join('')}</div>
+            <div class="aim-actions">
+                <button class="aim-cancel" onclick="document.getElementById('addInterestModal').remove()">Cancel</button>
+                <button class="aim-save" onclick="saveInterest()">Add to my library! ⭐</button>
+            </div>
+        </div>`;
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+    setTimeout(() => document.getElementById('aimInput')?.focus(), 50);
+}
+
+async function saveInterest() {
+    const input = document.getElementById('aimInput');
+    if (!input) return;
+    const topic = input.value.trim().toLowerCase().slice(0,40);
+    if (!topic || topic.length < 2) return;
+
+    document.getElementById('addInterestModal')?.remove();
+    await apiCall('/knowledge-library/interest', 'POST', {topic});
+    _interestLibrary = null;
+    await loadInterestLibrary(true);
+
+    // Send a message to Nova about the new interest
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.value = `I just added "${topic}" to my discovery library! Can you tell me something amazing about it?`;
+        switchTab('chat');
+        setTimeout(sendChatMessage, 200);
+    }
+}
+
+// Update Nova mood based on chat emotion
+function updateNovaMood(emotion) {
+    const dot = document.getElementById('novaMoodDot');
+    const face = document.getElementById('novaFace');
+    if (!dot || !face) return;
+    dot.className = 'nova-mood-dot';
+    if (emotion === 'thinking' || emotion === 'confused') {
+        dot.classList.add('thinking');
+        face.textContent = '🤔';
+    } else if (emotion === 'excited' || emotion === 'engaged') {
+        dot.classList.add('excited');
+        face.textContent = '🌟';
+    } else {
+        face.textContent = '⭐';
+    }
 }
 
 function setSubject(subject, btn) {
@@ -3532,6 +3834,7 @@ async function sendChatMessage() {
     addMessage(text, true);
     messageCount++;
     showTyping();
+    updateNovaMood('thinking');
 
     const studentAge = getStudentAge();
 
@@ -3594,7 +3897,11 @@ async function sendChatMessage() {
         updateEmotionGauge(detectedEmotion, 0.7);
     }
 
+    updateNovaMood(detectedEmotion);
     avatarReact(strategy, detectedEmotion);
+
+    // Refresh interest library in background (enthusiasm may have been detected server-side)
+    setTimeout(() => { _interestLibrary = null; loadInterestLibrary(true); }, 1500);
 
     if (autoReadEnabled && responseText) {
         speakText(responseText);
@@ -6669,6 +6976,7 @@ function init() {
     loadVideoLibrary('all');
     loadLearningPaths();
     loadDailySchedule();
+    loadInterestLibrary();
     initChatFeatures();
     setupOfflineMode();
     initOfflineStore();
