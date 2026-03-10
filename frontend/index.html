@@ -1035,6 +1035,7 @@ border-radius:8px;
 .gc-banner.science{background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,245,255,0.1))}
 .gc-banner.speed{background:linear-gradient(135deg,rgba(255,165,0,0.15),rgba(255,0,255,0.1))}
 .gc-banner.pattern{background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(0,255,136,0.1))}
+.gc-banner.toca{background:linear-gradient(135deg,rgba(255,140,0,0.3),rgba(255,50,180,0.25),rgba(100,200,255,0.2))}
 .gc-body{padding:14px 16px 16px}
 .gc-title{font-size:16px;font-weight:800;margin-bottom:4px}
 .gc-desc{font-size:12px;color:var(--text-muted);line-height:1.4;margin-bottom:10px}
@@ -1264,6 +1265,79 @@ border-radius:8px;
 /* Combo display in HUD */
 .gp-combo{font-size:11px;font-weight:800;color:var(--magenta);min-width:40px;text-align:center;transition:all 0.3s}
 @keyframes comboIn{0%{transform:scale(0.5) rotate(-10deg);opacity:0}60%{transform:scale(1.3) rotate(3deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+
+/* ===== COSMIC CAFÉ — TOCA BOCA STYLE ===== */
+.cc-scene{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:560px;position:relative;padding-bottom:8px}
+
+/* Alien customer */
+.cc-customer{display:flex;align-items:flex-end;gap:12px;width:100%;justify-content:center}
+.cc-alien{font-size:70px;line-height:1;cursor:pointer;user-select:none;animation:novaFloat 2.5s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.4));transition:transform 0.15s;flex-shrink:0}
+.cc-alien:hover{transform:scale(1.12) rotate(5deg)}
+.cc-alien:active{transform:scale(0.92) rotate(-5deg)}
+.cc-alien.celebrating{animation:novaCelebrate 0.5s ease 4!important;font-size:90px!important}
+
+/* Cartoon speech bubble */
+.cc-bubble{background:#fff;border-radius:20px;padding:12px 18px;position:relative;box-shadow:0 6px 20px rgba(0,0,0,0.25),0 2px 6px rgba(0,0,0,0.15);border:3px solid rgba(0,0,0,0.06);max-width:200px;min-width:120px}
+.cc-bubble::after{content:'';position:absolute;bottom:-14px;left:24px;border:8px solid transparent;border-top-color:#fff;filter:drop-shadow(0 3px 2px rgba(0,0,0,0.1))}
+.cc-want-label{font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.cc-want-items{font-size:26px;line-height:1.2;letter-spacing:2px;min-height:34px}
+
+/* Serving tray */
+.cc-tray-wrap{display:flex;align-items:center;gap:16px;width:100%;justify-content:center}
+.cc-tray{min-width:130px;min-height:70px;background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:3px solid rgba(255,255,255,0.15);border-radius:16px 16px 24px 24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 12px 6px;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);transition:all 0.2s;cursor:pointer}
+.cc-tray:hover{border-color:rgba(255,255,255,0.3);transform:scale(1.03)}
+.cc-tray-items{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;min-height:28px;max-width:110px}
+.cc-tray-item{font-size:22px;animation:ccItemDrop 0.45s cubic-bezier(0.34,1.56,0.64,1) both}
+.cc-tray-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+.cc-count-display{font-size:32px;font-weight:900;color:var(--cyan);text-shadow:0 0 20px rgba(0,245,255,0.5);min-width:80px;text-align:center;line-height:1;transition:transform 0.2s}
+.cc-count-display.pop{animation:ccCountPop 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+
+/* Item field where collectibles float */
+.cc-item-field{position:relative;width:100%;height:200px;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse at center,rgba(139,92,246,0.05) 0%,rgba(0,0,0,0) 70%)}
+.cc-item{position:absolute;font-size:38px;cursor:pointer;user-select:none;animation:ccItemFloat 3s ease-in-out infinite both;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.35));transition:transform 0.12s,opacity 0.3s;z-index:5;transform-origin:center}
+.cc-item:hover{transform:scale(1.3) rotate(15deg)!important;filter:drop-shadow(0 6px 18px rgba(255,200,0,0.5));z-index:10}
+.cc-item:active{transform:scale(0.85)!important}
+.cc-item.gone{opacity:0;transform:scale(0) translateY(-30px)!important;pointer-events:none;transition:all 0.35s cubic-bezier(0.6,-0.28,0.74,0.05)}
+.cc-item:nth-child(odd){animation-duration:2.8s}
+.cc-item:nth-child(3n){animation-duration:3.3s;animation-delay:0.4s}
+.cc-item:nth-child(4n){animation-duration:2.5s;animation-delay:0.8s}
+
+/* Serve button */
+.cc-serve-btn{padding:16px 40px;border-radius:50px;background:linear-gradient(135deg,#ff6b35,#ff0099,#9b59b6);color:#fff;font-size:18px;font-weight:900;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(255,0,100,0.4),0 3px 8px rgba(0,0,0,0.3);transition:all 0.2s;letter-spacing:1px;font-family:inherit;text-shadow:0 2px 4px rgba(0,0,0,0.2);animation:ccServePulse 2s ease-in-out infinite}
+.cc-serve-btn:hover{transform:scale(1.08) translateY(-3px);box-shadow:0 14px 32px rgba(255,0,100,0.5),0 4px 12px rgba(0,0,0,0.3)}
+.cc-serve-btn:active{transform:scale(0.94);box-shadow:0 4px 12px rgba(255,0,100,0.3)}
+.cc-serve-btn.ready{background:linear-gradient(135deg,#00ff88,#00e5ff,#8b5cf6);box-shadow:0 8px 32px rgba(0,255,136,0.5);animation:serveBtnReady 0.8s ease-in-out infinite}
+
+/* Toca Boca-style option buttons */
+.gp-option{padding:18px 20px;border-radius:18px;cursor:pointer;font-size:calc(16px * var(--heading-scale));font-weight:800;text-align:center;background:rgba(255,255,255,0.05);border:3px solid rgba(255,255,255,0.1);transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1);user-select:none;position:relative;overflow:hidden}
+.gp-option:hover{border-color:rgba(0,245,255,0.5);background:rgba(0,245,255,0.08);transform:scale(1.05) translateY(-2px);box-shadow:0 8px 24px rgba(0,245,255,0.2)}
+.gp-option:active{transform:scale(0.93)!important;box-shadow:none}
+
+/* Tap objects - make much bigger and more satisfying */
+.tap-object{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:20px;font-size:36px;cursor:pointer;transition:all 0.15s cubic-bezier(0.34,1.56,0.64,1);user-select:none;background:rgba(0,245,255,0.06);border:3px solid rgba(0,245,255,0.2);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.tap-object:hover{transform:scale(1.15) rotate(5deg);border-color:rgba(0,245,255,0.5);box-shadow:0 8px 20px rgba(0,245,255,0.25)}
+.tap-object:active{transform:scale(0.85)!important}
+
+/* Toca-style wobble on ALL interactive elements in game area */
+.toca-tap{animation:tocaTap 0.3s cubic-bezier(0.34,1.56,0.64,1)!important}
+@keyframes tocaTap{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(8deg)}60%{transform:scale(0.9) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
+
+/* Keyframes */
+@keyframes ccItemFloat{0%,100%{transform:translateY(0) rotate(var(--start-rot,0deg))}50%{transform:translateY(-10px) rotate(var(--end-rot,5deg))}}
+@keyframes ccItemDrop{0%{opacity:0;transform:scale(0) translateY(-20px) rotate(30deg)}60%{transform:scale(1.3) rotate(-5deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes ccCountPop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes ccServePulse{0%,100%{box-shadow:0 8px 24px rgba(255,0,100,0.4),0 3px 8px rgba(0,0,0,0.3)}50%{box-shadow:0 8px 36px rgba(255,0,100,0.65),0 3px 8px rgba(0,0,0,0.3)}}
+@keyframes serveBtnReady{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes ccWobble{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-6deg) scale(1.06)}45%{transform:rotate(0) scale(0.94)}65%{transform:rotate(4deg) scale(1.04)}85%{transform:rotate(-2deg) scale(1.01)}}
+
+/* Toca-style rising mode: recipe card */
+.cc-recipe{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:2px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px 20px;text-align:center;width:100%;max-width:380px}
+.cc-recipe-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--magenta);margin-bottom:8px}
+.cc-recipe-items{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap}
+.cc-recipe-part{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cc-recipe-emoji{font-size:32px;animation:novaFloat 2s ease-in-out infinite}
+.cc-recipe-qty{font-size:20px;font-weight:900;color:var(--cyan)}
+.cc-recipe-plus{font-size:24px;font-weight:900;color:var(--text-muted)}
 
 .pipeline{display:flex;align-items:center;gap:4px;padding:16px;overflow-x:auto;border-radius:16px;background:rgba(0,245,255,0.02);border:1px solid rgba(0,245,255,0.1)}
 .pipeline-step{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);transition:all 0.3s}
@@ -4034,6 +4108,7 @@ function gameNovaHTML(msg) {
 }
 
 const GAME_DEFS = [
+    {id:'cosmic_cafe',title:'Cosmic Café',icon:'star',cat:'toca',desc:'Serve alien customers the perfect cosmic meal! Tap ingredients, count, and serve!',descTiny:'Tap the snacks to feed the aliens! Count them up!',descRising:'Make recipes by collecting the right amounts!',tags:['Counting','Sandbox'],xp:70,toca:true},
     {id:'number_lab',title:'Number Lab',icon:'math',cat:'math',desc:'Explore numbers, solve puzzles, and discover math secrets in the lab!',descTiny:'Tap the right number! Count and match!',descRising:'Build equations, balance expressions, master operations.',tags:['Math','Interactive'],xp:50},
     {id:'word_forge',title:'Word Forge',icon:'reading',cat:'words',desc:'Craft words from letters, build your vocabulary, and become a word master!',descTiny:'Match letters! Build simple words!',descRising:'Vocabulary, word roots, and analogies.',tags:['Reading','Words'],xp:50},
     {id:'science_lab',title:'Science Explorer',icon:'science',cat:'science',desc:'Mix potions, run experiments, and discover how the world works!',descTiny:'Mix colors! Sort animals!',descRising:'Chemistry, physics, and ecosystem experiments.',tags:['Science','Discovery'],xp:50},
@@ -4052,18 +4127,20 @@ function renderGameSelect() {
         const desc = ag === 'tiny' ? g.descTiny : (ag === 'rising' ? g.descRising : g.desc);
         const hs = localStorage.getItem('hs_' + g.id);
         const img = GAME_IMAGES[g.id] || '';
-        const diffStars = g.cat === 'speed' ? '★★★★★' : g.cat === 'pattern' ? '★★★★☆' : '★★★☆☆';
-        return `<div class="game-card" onclick="launchGame('${g.id}')" style="animation:cardIn 0.4s ease-out both">
+        const diffStars = g.cat === 'speed' ? '★★★★★' : g.cat === 'pattern' ? '★★★★☆' : g.cat === 'toca' ? '🎮 Toca Style' : '★★★☆☆';
+        const bannerIcon = g.toca ? '👽🍰🚀' : icon(g.icon, 42);
+        return `<div class="game-card" onclick="launchGame('${g.id}')" style="animation:cardIn 0.4s ease-out both;${g.toca ? 'border-color:rgba(255,140,0,0.3)' : ''}">
             <div class="gc-glow ${g.cat}"></div>
             <div class="gc-scan"></div>
+            ${g.toca ? `<div style="position:absolute;top:8px;left:8px;z-index:10;background:linear-gradient(135deg,#ff6b35,#ff0099);color:#fff;font-size:9px;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:1px;text-transform:uppercase">✨ NEW</div>` : ''}
             ${hs ? `<div class="gc-highscore">🏆 ${hs}</div>` : ''}
             <div class="gc-banner ${g.cat}">
                 ${img ? `<img class="gc-banner-img" src="${img}" alt="" loading="lazy">` : ''}
-                <div class="gc-icon">${icon(g.icon, 42)}</div>
+                <div class="gc-icon" style="${g.toca ? 'font-size:36px;letter-spacing:4px' : ''}">${bannerIcon}</div>
             </div>
             <div class="gc-body">
                 <div class="gc-title">${g.title}</div>
-                <div style="font-size:10px;color:var(--magenta);letter-spacing:1px;margin-bottom:4px">${diffStars}</div>
+                <div style="font-size:10px;color:${g.toca ? '#ff8c00' : 'var(--magenta)'};letter-spacing:1px;margin-bottom:4px">${diffStars}</div>
                 <div class="gc-desc">${desc}</div>
                 <div class="gc-tags">${g.tags.map(t => `<span class="gc-tag">${t}</span>`).join('')}<span class="gc-tag xp">+${g.xp} XP</span></div>
             </div>
@@ -4090,7 +4167,8 @@ function launchGame(gameId) {
     gameAudio.play('start');
     novaReact('gameStart');
 
-    if (gameId === 'number_lab') setupNumberLab();
+    if (gameId === 'cosmic_cafe') setupCosmicCafe();
+    else if (gameId === 'number_lab') setupNumberLab();
     else if (gameId === 'word_forge') setupWordForge();
     else if (gameId === 'science_lab') setupScienceLab();
     else if (gameId === 'pattern_quest') setupPatternQuest();
@@ -4172,7 +4250,8 @@ function advanceRound() {
     updateGameHUD();
     const wasBoss = isBossRound();
     const doRender = () => {
-        if (gState.game === 'number_lab') renderNumberLabRound();
+        if (gState.game === 'cosmic_cafe') renderCosmicCafeRound();
+        else if (gState.game === 'number_lab') renderNumberLabRound();
         else if (gState.game === 'word_forge') renderWordForgeRound();
         else if (gState.game === 'science_lab') renderScienceLabRound();
         else if (gState.game === 'pattern_quest') renderPatternQuestRound();
@@ -5270,6 +5349,166 @@ function checkSpeedAnswer(el, chosen, correct) {
     }
 }
 
+// ===== COSMIC CAFÉ — TOCA BOCA STYLE GAME =====
+const CC_ALIENS = [
+    {emoji:'👽',name:'Zork',color:'#00ff88'},{emoji:'🤖',name:'R3X',color:'#00e5ff'},
+    {emoji:'👾',name:'Blip',color:'#ff6ec7'},{emoji:'🛸',name:'Zip',color:'#fbbf24'},
+    {emoji:'🌙',name:'Luna',color:'#a78bfa'},{emoji:'🦊',name:'Foxo',color:'#f97316'},
+    {emoji:'🐙',name:'Squig',color:'#06b6d4'},{emoji:'🦄',name:'Uni',color:'#ec4899'},
+];
+const CC_ITEMS = [
+    {emoji:'⭐',name:'star',color:'#fbbf24'},{emoji:'🌙',name:'moon',color:'#a78bfa'},
+    {emoji:'💎',name:'gem',color:'#00e5ff'},{emoji:'🌸',name:'flower',color:'#ff6ec7'},
+    {emoji:'🍬',name:'candy',color:'#f87171'},{emoji:'🔮',name:'orb',color:'#8b5cf6'},
+    {emoji:'🍄',name:'shroom',color:'#f97316'},{emoji:'🫧',name:'bubble',color:'#67e8f9'},
+    {emoji:'🎈',name:'balloon',color:'#fb923c'},{emoji:'✨',name:'spark',color:'#facc15'},
+];
+const CC_REACTIONS = {
+    waiting: ['novaFloat 2.5s ease-in-out infinite'],
+    happy: ['novaCelebrate 0.5s ease 3'],
+    excited: ['bounce 0.6s ease 2'],
+};
+
+let ccState = {target:0, item:null, collected:0, answered:false, roundType:'single', recipe:[]};
+
+function setupCosmicCafe() {
+    const ag = getAgeGroup();
+    gState.total = ag === 'tiny' ? 8 : 10;
+    gState.round = 0;
+    advanceRound();
+}
+
+function renderCosmicCafeRound() {
+    const ag = getAgeGroup();
+    const content = document.getElementById('gpContent');
+    const alien = CC_ALIENS[Math.floor(Math.random() * CC_ALIENS.length)];
+    const item = CC_ITEMS[Math.floor(Math.random() * CC_ITEMS.length)];
+
+    let target, totalItems;
+    if (ag === 'tiny') { target = Math.floor(Math.random() * 5) + 2; totalItems = target + Math.floor(Math.random() * 3) + 3; }
+    else if (ag === 'rising') { target = Math.floor(Math.random() * 7) + 3; totalItems = target + 4; }
+    else { target = Math.floor(Math.random() * 10) + 4; totalItems = target + 5; }
+
+    ccState = {target, item, collected: 0, answered: false, alien};
+
+    // Generate floating item positions
+    const items = Array.from({length: totalItems}, (_, i) => {
+        const angle = (i / totalItems) * 2 * Math.PI;
+        const r = 0.28 + Math.random() * 0.18;
+        const x = Math.max(4, Math.min(88, 50 + Math.cos(angle) * r * 100));
+        const y = Math.max(4, Math.min(86, 50 + Math.sin(angle) * r * 55));
+        const rot = Math.random() * 30 - 15;
+        const endRot = Math.random() * 30 - 15;
+        const dur = 2.4 + Math.random() * 1.4;
+        const delay = i * 0.06;
+        return {x, y, rot, endRot, dur, delay, id: i};
+    });
+
+    const wantHTML = Array(Math.min(target, 8)).fill(item.emoji).join('') + (target > 8 ? ` ×${target}` : '');
+
+    content.innerHTML = `
+        <div class="cc-scene">
+            ${gameNovaHTML(ag === 'tiny' ? 'Tap the snacks!' : 'Collect the ingredients!')}
+            <div class="cc-customer">
+                <div class="cc-alien" id="ccAlien" onclick="ccTickleAlien(this)" title="Click me!">${alien.emoji}</div>
+                <div class="cc-bubble">
+                    <div class="cc-want-label">I want:</div>
+                    <div class="cc-want-items" id="ccWantDisplay">${wantHTML}</div>
+                </div>
+            </div>
+            <div class="cc-tray-wrap">
+                <div class="cc-tray" id="ccTray" onclick="ccServe()">
+                    <div class="cc-tray-items" id="ccTrayItems"></div>
+                    <div class="cc-tray-label">🪐 tray — tap to serve</div>
+                </div>
+                <div class="cc-count-display" id="ccCountDisp"><span id="ccCollected">0</span><span style="font-size:18px;opacity:0.5"> / ${target}</span></div>
+            </div>
+            <div class="cc-item-field" id="ccField">
+                ${items.map(it => `<div class="cc-item" id="ccIt${it.id}"
+                    onclick="ccCollectItem(this,${it.id})"
+                    style="left:${it.x}%;top:${it.y}%;
+                    --start-rot:${it.rot}deg;--end-rot:${it.endRot}deg;
+                    animation-duration:${it.dur}s;animation-delay:${it.delay}s"
+                >${item.emoji}</div>`).join('')}
+            </div>
+            <button class="cc-serve-btn" id="ccServeBtn" onclick="ccServe()">🚀 SERVE!</button>
+        </div>`;
+
+    // No time pressure for tiny kids — generous timer for others
+    if (ag !== 'tiny') startRoundTimer(ag === 'rising' ? 40 : 30);
+}
+
+function ccCollectItem(el, id) {
+    if (el.classList.contains('gone') || ccState.answered) return;
+    el.classList.add('gone');
+    ccState.collected++;
+
+    // Add to tray with satisfying animation
+    const trayItems = document.getElementById('ccTrayItems');
+    const ing = document.createElement('div');
+    ing.className = 'cc-tray-item';
+    ing.textContent = ccState.item.emoji;
+    trayItems.appendChild(ing);
+
+    // Update count display
+    const countEl = document.getElementById('ccCollected');
+    if (countEl) countEl.textContent = ccState.collected;
+    const dispEl = document.getElementById('ccCountDisp');
+    if (dispEl) { dispEl.classList.remove('pop'); void dispEl.offsetWidth; dispEl.classList.add('pop'); }
+
+    // Wobble tray
+    const tray = document.getElementById('ccTray');
+    if (tray) { tray.style.animation = 'ccWobble 0.4s ease'; setTimeout(() => { tray.style.animation = ''; }, 420); }
+
+    // Play a pop sound
+    gameAudio.play('tick');
+    showFloatingXP(8, el.getBoundingClientRect().left + 20, el.getBoundingClientRect().top);
+
+    if (ccState.collected === ccState.target) {
+        // Perfect! Auto-celebrate and serve
+        const btn = document.getElementById('ccServeBtn');
+        if (btn) btn.classList.add('ready');
+        const alienEl = document.getElementById('ccAlien');
+        if (alienEl) { alienEl.classList.add('celebrating'); alienEl.style.animation = 'novaCelebrate 0.5s ease infinite'; }
+        spawnConfetti(20);
+        gameAudio.play('streak');
+        setTimeout(() => ccServe(), 900);
+    } else if (ccState.collected > ccState.target) {
+        // Too many — gentle feedback
+        const alienEl = document.getElementById('ccAlien');
+        if (alienEl) alienEl.style.animation = 'shake 0.4s ease';
+        const want = document.getElementById('ccWantDisplay');
+        if (want) want.style.color = '#f87171';
+        novaReact('encouraging', `Oops! I only want ${ccState.target} ${ccState.item.emoji}`);
+    }
+}
+
+function ccTickleAlien(el) {
+    if (ccState.answered) return;
+    el.style.animation = 'novaCelebrate 0.6s ease';
+    gameAudio.play('powerup');
+    spawnConfetti(12);
+    showFloatMsg('Hehe! 😄', '#fbbf24');
+    setTimeout(() => { el.style.animation = 'novaFloat 2.5s ease-in-out infinite'; }, 700);
+}
+
+function ccServe() {
+    if (ccState.answered) return;
+    if (ccState.collected === 0) { novaReact('encouraging', 'Tap the snacks first!'); return; }
+    if (ccState.collected !== ccState.target) {
+        novaReact('encouraging', `Need exactly ${ccState.target}! You have ${ccState.collected}`);
+        return;
+    }
+    ccState.answered = true;
+    const alienEl = document.getElementById('ccAlien');
+    if (alienEl) { alienEl.textContent = '🥳'; alienEl.style.animation = 'novaCelebrate 0.5s ease 4'; alienEl.style.fontSize = '80px'; }
+    const bubble = document.getElementById('ccBubble');
+    if (bubble) bubble.innerHTML = `<div style="font-size:20px;font-weight:900;color:#22c55e">Thank you! 😋</div>`;
+    spawnConfetti(50);
+    gameAudio.play('streak');
+    scoreAnswer(true);
+}
+
 function connectGameWs() { renderGameSelect(); }
 
 // ===== FUTURISTIC GAME UPGRADES =====
@@ -6188,6 +6427,33 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ===== GLOBAL TOCA BOCA POLISH =====
+// Satisfying wobble + tiny pop sound on every tap inside game area
+document.addEventListener('pointerdown', function(e) {
+    const gameArea = document.getElementById('gamePlayArea');
+    if (!gameArea || !gameArea.classList.contains('active')) return;
+    const el = e.target.closest('.gp-option,.orb,.tap-object,.cc-item,.cc-alien,.cc-serve-btn,.pq-opt-btn,.sort-item,.element-card,.gp-tile,.gp-slot,.orb,.color-beaker');
+    if (!el || el.classList.contains('disabled') || el.classList.contains('gone')) return;
+    // Remove then re-add to retrigger animation
+    el.classList.remove('toca-tap');
+    void el.offsetWidth;
+    el.classList.add('toca-tap');
+    el.addEventListener('animationend', () => el.classList.remove('toca-tap'), {once: true});
+    // Tiny blip sound on every touch
+    gameAudio.init();
+    if (gameAudio.ctx) {
+        const osc = gameAudio.ctx.createOscillator();
+        const g = gameAudio.ctx.createGain();
+        osc.connect(g); g.connect(gameAudio.ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 500 + Math.random() * 400;
+        const t = gameAudio.ctx.currentTime;
+        g.gain.setValueAtTime(0.06, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+        osc.start(t); osc.stop(t + 0.06);
+    }
+}, {passive: true});
 </script>
 </body>
 </html>
