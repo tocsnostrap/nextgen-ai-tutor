@@ -413,6 +413,28 @@ Assumptions: about $2 per hour of live tutoring on Claude Opus 5.5 ($4 in / $20 
 
 Each extra tutor-mode session adds about $1.25–2.50 including voice.
 
+### 15.5 The tight-budget configuration (chosen)
+
+"Keep it tight" changes four defaults:
+
+| Choice | Was | Now | Effect |
+|--------|-----|-----|--------|
+| Teaching model | Claude Opus 5.5 | **Claude Sonnet 5.5** | Halves the AI cost. Quality is checked on the test set before it is accepted; if it falls short on teaching, Opus is used for live teaching only |
+| Screening, routine marking, summaries | Same model as teaching | **Claude Haiku 5.5** | A small fraction of the price for simple jobs |
+| Voice | Upper half of the range | **Cheapest voice that passes your listening test** | The largest swing in the bill. A voice the children do not like defeats the goal, so this is tested, not assumed |
+| Paid teacher review | Every subject | **Maths and English only, a few hours** | The rest relies on the test set, transcripts and your own judgement |
+
+Also: tutor mode is the default for both children; school mode costs roughly two to three times as much and is switched on only when wanted. Spending caps are set per child per day and overall per month, with an email at 80%.
+
+Estimated monthly cost for two children in tutor mode:
+
+| | Hosting | AI | Voice | Total |
+|---|---------|----|-------|-------|
+| Tight configuration | $10–20 | $30–40 | $15–35 | **about $55–95** |
+| Original configuration | $10–20 | $60–70 | $45–55 | about $120–140 |
+
+These remain estimates until real sessions are measured. The real figure is shown on the parent page from the first week.
+
 ### 15.4 Worked example
 
 Two children, aged 7 and 10, after about $130–365 of one-off setup. Voice is budgeted in the upper half of its range, because a natural British voice that also handles Arabic is at the dearer end:
@@ -610,17 +632,17 @@ A separate five-minute form or spoken chat for the parent, before the child's me
 
 Things the plan above did not cover. Each has a proposed default; the first group cannot be defaulted and needs your answer.
 
-### 20.1 Facts only you have
+### 20.1 Your answers
 
-| # | Question | Why it matters |
-|---|----------|----------------|
-| 1 | How many children, what ages and school years, and are they in school now or home-educated? | Decides which year group is built first and which mode is tested first |
-| 2 | Any diagnosed or suspected needs (dyslexia, ADHD, autism, speech, hearing, sight)? | Changes session length, text, pace and how much voice can be relied on |
-| 3 | What will they use: tablet, laptop, phone? Touchscreen? Headset? | The whiteboard, handwriting and voice are designed around the device |
-| 4 | Allergies and dietary rules for cooking | Recipes must respect them from day one |
-| 5 | Is Arabic for general use, for reading the Qur'an, or both? Should religious education be included? | Changes the Arabic content and whether a subject is added. I have not assumed either way |
-| 6 | Monthly budget ceiling | Sets the model and voice choices and the spending caps |
-| 7 | What does success look like in six months? | Without a target, nothing can be judged |
+| # | Question | Answer | What it changes |
+|---|----------|--------|-----------------|
+| 1 | Children | Two. **Ages, school years and whether they are in school are still needed** | Decides the first year group and the first mode |
+| 2 | Diagnosed or suspected needs | None | Standard pace and text. The dyslexia-friendly and read-aloud options stay, since they cost little and help any child |
+| 3 | Devices | Tablet and laptop | Runs in the browser on both, no app store. Touch-first: big targets, finger drawing on the tablet whiteboard, typing on the laptop. Built-in microphones; a headset is recommended, not required |
+| 4 | Allergies and dietary rules | None | No recipe filtering. The field stays on the parent page in case it changes |
+| 5 | Arabic and religion | Arabic as a language only. Religion taught in a general way | Arabic follows the same path as French and Spanish. Religious education is added as a light strand inside life skills: what different religions and worldviews believe and celebrate, taught about them, never into them |
+| 6 | Budget | Keep it tight | Section 15.5 |
+| 7 | Success in six months | The children love it | Section 21 |
 
 ### 20.2 Accounts and money you need to set up
 
@@ -666,3 +688,35 @@ Things the plan above did not cover. Each has a proposed default; the first grou
 | 29 | **How long data is kept** | Transcripts for 12 months, the learner record until you delete it, audio not at all by default |
 | 30 | **Poor internet** | Session state saved after every step; homework and reading work offline and sync later |
 | 31 | **The product's name.** The code says both "NextGen AI Tutor" and "Cosmic Academy" | Your choice; no default |
+
+---
+
+## 21. What success means: the children love it
+
+This is the goal the product is judged on, so it is measured, and it reorders some priorities.
+
+### 21.1 How "love it" is measured
+
+| Sign | Measure | Target at six months |
+|------|---------|----------------------|
+| They choose it | Sessions the child starts without being told to | Most sessions |
+| They stay | Sessions finished, not abandoned | 9 in 10 |
+| They say so | Three-face rating at the end of each session | Mostly the happy face |
+| They want more | Extra sessions and wonder-list questions added by the child | Rising, not falling |
+| They talk to her | Share of answers given by voice | Rising |
+| You see it | A monthly one-line question to you: "Do they look forward to it?" | Yes |
+
+Weeks 2 to 4 are when novelty usually wears off. A drop there is the early warning, and it is reviewed weekly during that period.
+
+### 21.2 What moves up the priority list
+
+- **Nova's personality and voice** get the most polish of anything in phases 3 and 4. A correct tutor the children find dull fails the goal.
+- **Reply speed.** Waiting kills a conversation faster than anything else.
+- **The first meeting** (section 19) is treated as the most important session in the product.
+- **Child-led choices** ship with the first usable version, not later.
+- **Your children try it early and often:** end of phase 3, end of phase 4, then every phase.
+- **Early wins.** The first two weeks are pitched slightly easy on purpose, so the first experience is success.
+
+### 21.3 The guard rail
+
+Children can love something that teaches them little; a game does that. So one learning measure is kept alongside: skills marked as mastered must still be answered correctly a week later, and the half-termly paper must show progress. If the children love it and those are flat, the product is failing quietly, and you are told.
