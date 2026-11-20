@@ -415,13 +415,13 @@ Each extra tutor-mode session adds about $1.25–2.50 including voice.
 
 ### 15.5 The tight-budget configuration (chosen)
 
-"Keep it tight" changes four defaults:
+"Keep it tight" changes three defaults. **Voice is exempt: it is not a place to save.**
 
 | Choice | Was | Now | Effect |
 |--------|-----|-----|--------|
 | Teaching model | Claude Opus 5.5 | **Claude Sonnet 5.5** | Halves the AI cost. Quality is checked on the test set before it is accepted; if it falls short on teaching, Opus is used for live teaching only |
 | Screening, routine marking, summaries | Same model as teaching | **Claude Haiku 5.5** | A small fraction of the price for simple jobs |
-| Voice | Upper half of the range | **Cheapest voice that passes your listening test** | The largest swing in the bill. A voice the children do not like defeats the goal, so this is tested, not assumed |
+| Voice | Upper half of the range | **Unchanged: the best voice in your listening test, whatever its price within the range** | None. Voice quality and reply speed are what make Nova feel real, so they are chosen on quality first. Savings come from the other rows |
 | Paid teacher review | Every subject | **Maths and English only, a few hours** | The rest relies on the test set, transcripts and your own judgement |
 
 Also: tutor mode is the default for both children; school mode costs roughly two to three times as much and is switched on only when wanted. Spending caps are set per child per day and overall per month, with an email at 80%.
@@ -430,7 +430,7 @@ Estimated monthly cost for two children in tutor mode:
 
 | | Hosting | AI | Voice | Total |
 |---|---------|----|-------|-------|
-| Tight configuration | $10–20 | $30–40 | $15–35 | **about $55–95** |
+| Tight configuration, full-quality voice | $10–20 | $30–40 | $45–55 | **about $85–115** |
 | Original configuration | $10–20 | $60–70 | $45–55 | about $120–140 |
 
 These remain estimates until real sessions are measured. The real figure is shown on the parent page from the first week.
