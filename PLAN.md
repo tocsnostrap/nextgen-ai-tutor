@@ -13,17 +13,18 @@ Phase 0 includes verifying each one and recording the link in `docs/research.md`
 
 | Question | Decision |
 |----------|----------|
-| Product | **Tutor**, not a full school. 5–6 live sessions a week, with extra sessions on request |
+| Product | **Two modes, chosen by the parent per child and switchable at any time.** Tutor mode: 5–6 live sessions a week, with extra sessions on request. School mode: a full weekday timetable that replaces school |
 | Curriculum | **England's National Curriculum**, Years 1–7 (Key Stages 1, 2 and the first year of 3). Scotland, Wales and Northern Ireland differ and are not covered |
 | Ages | **6–12** |
-| Subjects | English, maths, science, languages, art, cooking, life skills |
+| Subjects | English, maths, science, languages (Arabic, French, Spanish), art, cooking, life skills |
+| Voice | **Required from the first usable version.** Children talk to the tutor and hear it reply |
 | Approach | **Child-led** and **diverse** (section 4) |
 | Who it is for | Not a deciding factor. It is built safely either way (section 11) |
 
-Dropped from earlier drafts: school mode, ages 3–5, US curriculum, social studies as its own subject.
+Dropped from earlier drafts: ages 3–5, US curriculum. History and geography are added in school mode only, because a full school day needs them.
 
 Assumptions I made that you can change:
-- **Languages:** French first, Spanish second. These are the two most taught in English primary schools.
+- **Languages:** the parent picks one or more of Arabic, French and Spanish per child. Arabic is taught as Modern Standard Arabic, not a regional dialect, with a separate starting point for children who already speak it at home.
 - **Life skills** follows the PSHE Association programme of study (money, health, safety, emotions, relationships). Relationships and health topics are parent-controlled.
 
 ---
@@ -81,7 +82,7 @@ UK-specific sources used for subject content: Education Endowment Foundation gui
 
 - **Learning styles** (visual/kinesthetic) in `claude_ai_service.py` and `adaptation_engine.py`. Pashler et al. (2008) found no support. Remove.
 - **Emotion detection** as a model. Reading emotion from faces is unreliable (Barrett et al., 2019) and a camera on a child is a privacy cost. Replace with a one-tap mood check and behaviour signals.
-- **A 150–210 minute on-screen day** in `schedule_engine.py`. Replaced by the timetable in section 7.
+- **A 150–210 minute day spent entirely on screen** in `schedule_engine.py`. Replaced by the timetables in section 7, where school mode is mostly off screen.
 - **"3–5 years ahead of state of the art"** claims in the docs. Remove.
 
 ---
@@ -134,7 +135,8 @@ The evidence that diverse content raises attainment is thinner than the evidence
 Subject notes:
 - **Cooking** is the "cooking and nutrition" strand of design and technology. Every task involving heat or knives requires an adult to confirm they are present before the steps are shown.
 - **Art** is done off screen. The child uploads a photo; the tutor gives feedback on technique and asks about choices.
-- **Languages** need listening and speaking, so they depend on voice (phase 8). Reading and writing in the language can start earlier. Automated scoring of children's pronunciation is unreliable, so speaking gets encouragement and modelling, not a mark.
+- **Languages** are taught through listening and speaking first, so they are built after voice. Automated scoring of children's pronunciation is unreliable, so speaking gets encouragement and modelling, not a mark.
+- **Arabic** needs extra work the other two do not: a new alphabet with letters that change shape by position, right-to-left text on every screen that shows it, vowel marks shown for learners, handwriting practice on the whiteboard, and speech services that handle Arabic well. These are checked when the voice vendor is chosen.
 - **Science** includes off-screen investigations with household items, recorded by photo.
 
 ---
@@ -182,7 +184,7 @@ Session plans are generated as structured data, checked by code (answers verifie
 - Homework not done: the next session starts with it.
 - Extra session added: it takes the next item from the week plan, a review, or the child's chosen topic.
 
-### 7.3 Timetable
+### 7.3 Tutor mode timetable
 
 | | Ages 6–8 | Ages 9–12 |
 |---|----------|-----------|
@@ -203,6 +205,24 @@ Example week, with the parent setting the days and times:
 | Sat (optional 6th) | Art, cooking or life skills, rotating | Project time |
 
 Languages are taught little and often because short, frequent practice suits vocabulary learning. Homework stays short: Cooper, Robinson & Patall (2006) found little measured benefit in the primary years.
+
+### 7.4 School mode timetable
+
+A weekday plan that replaces a school day. Most of it is **off screen**: the tutor sets the task by voice, the child does it on paper or with objects, then returns to show the work by photo.
+
+| | Ages 6–8 | Ages 9–12 |
+|---|----------|-----------|
+| Total learning day | 2.5–3 hours | 3.5–4 hours |
+| Tutor-led on screen | 60–75 min in 3 blocks | 90–120 min in 3–4 blocks |
+| Off screen (reading, handwriting, making, investigating, moving) | The rest | The rest |
+| Breaks | Every 25 min | Every 45 min |
+| Daily | Maths, English, a language | Maths, English, a language |
+| Across the week | Science twice; art, cooking, life skills, history and geography once each | Same, plus a half-day project |
+| Homework | None; the off-screen blocks replace it | None |
+
+Example day, ages 9–12: maths with the tutor (35 min), maths practice on paper (25 min), break, English with the tutor (35 min), reading a book (30 min), lunch, language (20 min), science investigation off screen (45 min), show-and-reflect with the tutor (15 min).
+
+School mode also produces attendance and progress records. Home education is legal in England and parents are not required to follow the National Curriculum, but the parent remains legally responsible for the child receiving a suitable full-time education; the product supports that and does not take it over.
 
 ---
 
@@ -242,6 +262,7 @@ Tutor behaviour rules: ask before telling; never give the final answer to an exi
 
 - Weekly report: time spent, objectives mastered and in progress by National Curriculum year, misconceptions, homework completion, portfolio additions, what is planned next.
 - Full transcripts of every session.
+- Choose tutor mode or school mode, and which languages the child learns.
 - Set goals, available days and times, screen caps, and which life-skills topics are allowed.
 - Add an extra session.
 - Alerts: missed sessions, repeated struggle on one objective, any safety flag.
@@ -293,9 +314,13 @@ Model IDs live in config, not code. Default `claude-opus-5-5` for teaching, plan
 
 ### 12.3 Voice and whiteboard
 
-- Claude handles text and images. Speech needs separate speech-to-text and text-to-speech services, chosen in the voice phase. The text-to-speech voice must handle French and Spanish.
-- First version is push-to-talk with streamed spoken replies. Open-microphone conversation comes after that works.
+Voice is part of the core product, built straight after the text tutor works.
+
+- Claude handles text and images. Speech needs two separate services: speech-to-text for the child and text-to-speech for the tutor. They are chosen in the voice phase by testing with real children's speech in English, Arabic, French and Spanish.
+- First version: the child holds a button to talk, and the tutor's reply is spoken as it is generated. Hands-free conversation where the child can interrupt comes next.
+- Every spoken reply is also shown as text, and every question can be answered by tapping, so a recognition error never blocks a child.
 - The whiteboard is shared: the tutor draws through a tool, the child draws by touch, and the tutor can see a snapshot of the child's drawing.
+- The text tutor is built first because the automated tests run on text. Voice is a layer over the same tutor, not a second one.
 
 ### 12.4 How the system itself keeps improving
 
@@ -316,13 +341,14 @@ Each phase ends with a check that must pass before the next starts.
 | 1. Accounts | Parent and child accounts, real login, all state in Postgres | Two children on one parent account have separate records that survive a restart |
 | 2. Curriculum | Import maths and English for Years 1–7 as a graph; item bank with computed answers; placement | A new child finishes placement and gets a mastery map |
 | 3. Tutor | Learner record, tutor tools, the section 8 session flow in text, child-led choices, safety screening, test set | A scripted session runs end to end and the record updates correctly; tests pass |
-| 4. Planning | Half-term, week and session plans; timetable; extra sessions; re-planning rules | A simulated 6-week child gets sensible plans that react to pass and fail |
-| 5. Homework | Assign, submit (typed and photo), mark, feed back | Homework from one session is reviewed in the next |
-| 6. Parent | Reports, transcripts, goals, alerts, export and delete | Parent sees an accurate weekly report |
-| 7. Science and practical subjects | Science content; art, cooking and life-skills menus, portfolio, adult-present check | A practical session runs from choice to photo to feedback |
-| 8. Voice | Push-to-talk, spoken replies, shared whiteboard | A full session with no typing |
-| 9. Languages | French, then Spanish: vocabulary, phonics, listening and speaking practice | A 10-minute French lesson runs by voice |
-| 10. Real use | 2–4 weeks with real children | Issues list worked through |
+| 4. Voice | Hold-to-talk, spoken replies, shared whiteboard, in English | A full session with no typing |
+| 5. Planning | Half-term, week and session plans; tutor-mode timetable; extra sessions; re-planning rules | A simulated 6-week child gets sensible plans that react to pass and fail |
+| 6. Homework | Assign, submit (typed and photo), mark, feed back | Homework from one session is reviewed in the next |
+| 7. Parent | Reports, transcripts, goals, mode and language choices, alerts, export and delete | Parent sees an accurate weekly report |
+| 8. Science and practical subjects | Science content; art, cooking and life-skills menus, portfolio, adult-present check | A practical session runs from choice to photo to feedback |
+| 9. Languages | Arabic, French, Spanish: right-to-left display, alphabet and handwriting for Arabic, vocabulary, listening and speaking | A 10-minute lesson in each language runs by voice |
+| 10. School mode | Full-day timetable with off-screen blocks, history and geography content, attendance records | A simulated school week runs for each age band |
+| 11. Real use | 2–4 weeks with real children | Issues list worked through |
 
 ---
 
@@ -333,10 +359,11 @@ Each phase ends with a check that must pass before the next starts.
 | The model teaches something wrong | Computed maths answers; checked item bank; tests; parent-visible transcripts |
 | The model gives answers away | Tool design withholds answers on graded items; the test set measures it |
 | Child-led drifts away from the curriculum | The tutor owns the skill sequence; the child owns context, order and projects |
-| Speech recognition struggles with children's voices and with learners' French | Tap alternatives for every response; no marks for pronunciation |
+| Speech recognition struggles with children's voices and with learners' Arabic, French and Spanish | Vendors tested on real children's speech before choosing; tap alternatives for every response; no marks for pronunciation |
+| Voice is now on the critical path | Built in phase 4 on top of a tested text tutor; text and tap remain as fallback |
 | Cooking injuries | Adult-present confirmation; age-graded tasks |
 | Running cost per child | Prompt caching; measure in real use before choosing cheaper models |
-| Scope: seven subjects | Phase order; nothing later starts until the earlier check passes |
+| Scope: seven subjects, three languages, two modes | Phase order; nothing later starts until the earlier check passes |
 
 ---
 
@@ -350,9 +377,9 @@ Vendors bill in US dollars, so figures are in dollars; UK VAT may be added. AI f
 |------|------|-------|
 | Building the software | No extra charge | Done in these sessions under your existing Claude plan |
 | National Curriculum data | $0 | Published free under the Open Government Licence; to be confirmed |
-| Generating and checking the item bank, running tests during the build | $100–300 | My estimate of API spend; higher than before because there are seven subjects |
+| Generating and checking the item bank, running tests during the build | $120–350 | My estimate of API spend, for seven subjects and three languages |
 | Domain name | $10–15 a year | From memory, not checked |
-| **Total** | **about $110–315** | |
+| **Total** | **about $130–365** | |
 
 ### 15.2 Fixed monthly running cost
 
@@ -366,25 +393,24 @@ Vendors bill in US dollars, so figures are in dollars; UK VAT may be added. AI f
 
 The free Render plan in the current `render.yaml` sleeps when idle and cannot run a background worker, so it is not usable for this.
 
-### 15.3 AI cost per child per month
+### 15.3 AI and voice cost per child per month
 
-Assumption: about $2 per hour of live tutoring on Claude Opus 5.5 ($4 in / $20 out per million tokens, with prompt caching), plus planning, marking and reports. Claude Sonnet 5.5 is half the token price.
+Assumptions: about $2 per hour of live tutoring on Claude Opus 5.5 ($4 in / $20 out per million tokens, with prompt caching), plus planning, marking and reports. Voice is $0.50–2.50 per tutoring hour: speech-to-text at about $0.005–0.008 per minute, and text-to-speech from $15 per million characters (OpenAI) to $40–100 (ElevenLabs, better voices and faster). Claude Sonnet 5.5 would halve the AI column.
 
-| Age | Sessions | Tutor hours a month | Opus 5.5 | Sonnet 5.5 |
-|-----|----------|---------------------|----------|------------|
-| 6–8 | 5–6 a week, 25 min | about 10 | $23–28 | $12–14 |
-| 9–12 | 5–6 a week, 40 min | about 16 | $36–42 | $18–21 |
+| Mode | Age | Tutor-led hours a month | AI (Opus 5.5) | Voice | Total |
+|------|-----|-------------------------|---------------|-------|-------|
+| Tutor | 6–8 | about 10 | $23–28 | $5–25 | $28–53 |
+| Tutor | 9–12 | about 16 | $36–42 | $8–40 | $44–82 |
+| School | 6–8 | about 24 | $55–65 | $12–60 | $67–125 |
+| School | 9–12 | about 38 | $85–100 | $19–95 | $104–195 |
 
-Each extra session adds about $1 (25 min) or $1.50 (40 min) on Opus 5.5.
+Each extra tutor-mode session adds about $1.25–2.50 including voice.
 
-### 15.4 Voice per child per month
+### 15.4 Worked example
 
-Speech-to-text is about $0.005–0.008 per minute. Text-to-speech ranges from $15 per million characters (OpenAI) to $40–100 (ElevenLabs, better voices and faster). That is roughly $0.50–2.50 per tutoring hour.
+Two children, aged 7 and 10, with mid-priced voice, after about $130–365 of one-off setup:
 
-| Age 6–8 | Age 9–12 |
-|---------|----------|
-| $5–25 | $8–40 |
-
-### 15.5 Worked example
-
-Two children, aged 7 and 10, on Opus 5.5 with mid-priced voice: about $28 hosting + $60–70 AI + $35–40 voice = **roughly $125–140 a month**, after about $110–315 of one-off setup. Without voice: roughly $90–100 a month.
+| | Hosting | AI | Voice | Total a month |
+|---|---------|----|-------|---------------|
+| Both in tutor mode | $28 | $60–70 | $35–40 | **about $125–140** |
+| Both in school mode | $28 | $140–165 | $90–95 | **about $260–290** |
