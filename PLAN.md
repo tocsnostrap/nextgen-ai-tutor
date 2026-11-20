@@ -9,18 +9,18 @@ Phase 0 includes verifying each one and recording the link in `docs/research.md`
 
 ---
 
-## 1. Decisions needed before building
+## 1. Scope (decided: "all")
 
-Each has a default. If you say nothing, the default is what gets built.
+| # | Question | Decision |
+|---|----------|----------|
+| 1 | Tutor or full school? | **Both.** Tutor mode and school mode share one tutor, one learner record and one planner. They differ only in timetable (section 6) |
+| 2 | Which curriculum? | **Built to hold several.** First import: US Common Core (maths, English) and NGSS (science), because the existing data is already K–6 by grade. Say so if you want a different one first |
+| 3 | Own children or public? | **Both, in order.** Family pilot, then public. Public launch is gated on consent and legal review (section 10) |
+| 4 | Ages | **3–12.** Built in the order 6–12, then 3–5, because the 3–5 mode depends on voice |
+| 5 | Language | English first. Content is stored so other languages can be added |
+| 6 | Subjects | **All five in the current code:** maths, reading, writing, science, social studies. Maths and reading are built first because every other subject's lessons reuse their machinery |
 
-| # | Decision | Default | Why it matters |
-|---|----------|---------|----------------|
-| 1 | Tutor or full school? | **Tutor**: short sessions a few times a week, plus homework | The current code plans a 90–210 minute school day. That is a different product, and 90 min/day of screen time for ages 3–5 is above paediatric guidance |
-| 2 | Which curriculum? | **None chosen. I need your country.** | The 122 seeded standards are hand-written and cite no published curriculum. Lessons, reports and "grade level" all hang off this |
-| 3 | Your own children, or a public product? | Family pilot first, built so it can open up later | A public product for under-13s needs verified parental consent and a legal review before launch |
-| 4 | Age range at launch | **6–12 first**, 3–5 later as a parent-led mode | Under-6s cannot type, speech recognition is weak on their voices, and the evidence favours adult-led play |
-| 5 | Language of instruction | English only | Affects curriculum, speech vendors and reading instruction |
-| 6 | Subjects at launch | Maths and reading/writing; science after | These have the strongest evidence and the clearest skill sequence |
+"All" makes the build longer, not different. The order in section 12 is unchanged; phases 8–10 are now required, not optional.
 
 ---
 
@@ -138,6 +138,22 @@ Session plans are generated as structured data, checked by code (answers verifie
 
 The parent sets available days and times; the system places sessions and sends reminders. Homework length follows Cooper, Robinson & Patall (2006): little measured benefit in primary years, so it stays short and is mostly practice and reading.
 
+### 6.4 School mode timetable
+
+School mode is a weekday plan that replaces a school day. Most of it is **off screen**: the tutor sets the task, the child does it on paper or with objects, then returns to show the work.
+
+| | Ages 3–5 | Ages 6–8 | Ages 9–12 |
+|---|----------|----------|-----------|
+| Total learning day | 60–90 min | 2.5–3 hours | 3.5–4 hours |
+| Tutor-led on screen | 20–30 min in 2–3 short blocks | 60–75 min in 3 blocks | 90–120 min in 3–4 blocks |
+| Off screen (reading, writing by hand, making, moving) | The rest, parent-led | The rest, checked by photo | The rest, checked by photo |
+| Breaks | After every block | Every 25 min | Every 45 min |
+| Subjects per day | Language and number through play | Maths, reading, writing daily; science or social studies alternating | Same, plus a weekly project |
+
+Notes:
+- The current `schedule_engine.py` puts the whole day on screen (90/150/210 minutes). It is rewritten to the split above.
+- Home-education law differs by country and state. The product can produce attendance and progress records, but the parent remains legally responsible for the child's education.
+
 ---
 
 ## 7. A live session
@@ -252,6 +268,8 @@ Each phase ends with a check that must pass before the next starts.
 | 7. Pilot | Real use with your own children for 2–4 weeks | Issues list worked through |
 | 8. Voice | Push-to-talk, spoken replies, shared whiteboard | A full session with no typing |
 | 9. Ages 3–5 | Parent-led mode, tap and voice only | A 10-minute session a 4-year-old can complete with a parent |
+| 10. School mode and remaining subjects | Full-day timetable with off-screen blocks; science and social studies content; attendance records | A simulated school week runs for each age band |
+| 11. Public launch | Parental consent flow, payments, legal review, load testing | Review signed off; a stranger can sign up safely |
 
 ---
 
@@ -263,5 +281,62 @@ Each phase ends with a check that must pass before the next starts.
 | The model gives answers away | Tool design withholds answers on graded items; eval measures it |
 | Speech recognition fails on young voices | Tap alternatives for every response; ages 3–5 last |
 | Running cost per child | Prompt caching; measure in the pilot before choosing cheaper models |
-| Scope | Phases 0–6 are the product. Voice and under-6s wait until those work |
+| Scope | "All" is large. The phase order protects it: nothing in a later phase is started until the earlier check passes |
 | Child safety and privacy | Section 10 is a gate, not a phase |
+
+---
+
+## 14. Costs
+
+All figures are US dollars. AI figures are my estimates from published token prices and assumed usage; expect them to be off by up to 2x until the pilot measures real sessions. Hosting and speech prices come from third-party listings found on 2026-11-20 and must be confirmed on the vendors' own pricing pages.
+
+### 14.1 One-off setup
+
+| Item | Cost | Basis |
+|------|------|-------|
+| Building the software | No extra charge | Done in these sessions under your existing Claude plan |
+| Curriculum data (Common Core, NGSS) | $0 | Published free; licence terms to be confirmed in phase 0 |
+| Generating and checking the item bank, running evals during the build | $50–200 | My estimate of API spend |
+| Domain name | $10–15 a year | From memory, not checked |
+| **Family pilot total** | **about $60–215** | |
+| Public launch: privacy lawyer review | Low thousands | Unsourced estimate; get a quote |
+| Public launch: parental consent | Payment-processor fee per parent | A small card charge is the cleanest FTC-accepted method |
+
+### 14.2 Fixed monthly running cost
+
+| Item | Pilot | Public |
+|------|-------|--------|
+| Web server (Render Starter) | $7 | $25+ |
+| Background worker | $7 | $25+ |
+| Postgres database | $7–19 | $40+ |
+| Render team plan | $0 | $25 |
+| Email, error tracking, file storage | $0 on free tiers (from memory) | Scales with users |
+| **Total** | **about $21–33** | **about $115+** |
+
+The free Render plan in the current `render.yaml` sleeps when idle and cannot run a background worker, so it is not usable for this.
+
+### 14.3 AI cost per child per month
+
+Assumption: about $2 per hour of live tutoring on Claude Opus 5.5 ($4 in / $20 out per million tokens, with prompt caching), plus planning, marking and reports. Claude Sonnet 5.5 is half the token price.
+
+| Mode | Age | Tutor-led hours a month | Opus 5.5 | Sonnet 5.5 |
+|------|-----|-------------------------|----------|------------|
+| Tutor | 3–5 | about 3 | $6–8 | $3–4 |
+| Tutor | 6–8 | about 7 | $18–22 | $9–11 |
+| Tutor | 9–12 | about 12 | $25–30 | $13–15 |
+| School | 3–5 | about 9 | $20–25 | $10–13 |
+| School | 6–8 | about 24 | $55–65 | $28–33 |
+| School | 9–12 | about 38 | $85–100 | $43–50 |
+
+### 14.4 Voice add-on per child per month
+
+Speech-to-text is about $0.005–0.008 per minute. Text-to-speech ranges from $15 per million characters (OpenAI) to $40–100 (ElevenLabs, better voices and faster). That works out to roughly $0.50–2.50 per tutoring hour.
+
+| Mode | Age 6–8 | Age 9–12 |
+|------|---------|----------|
+| Tutor | $4–18 | $6–30 |
+| School | $12–60 | $19–95 |
+
+### 14.5 Worked example
+
+Two children (ages 7 and 10) in tutor mode on Opus 5.5 with mid-priced voice: about $28 hosting + $45–50 AI + $20–25 voice = **roughly $95–105 a month**, after about $60–215 of one-off setup. The same two children in school mode: roughly $230–290 a month.
