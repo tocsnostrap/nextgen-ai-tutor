@@ -603,3 +603,66 @@ A separate five-minute form or spoken chat for the parent, before the child's me
 - Likes and dislikes are not asked once and frozen. Nova notices new interests in conversation and adds them; she checks in properly at the start of each half term.
 - The child and the parent can see and edit what Nova has noted about them.
 - Dislikes are handled with care: a child who says "I hate maths" still does maths, in shorter steps, in their favourite context, with early wins. The dislike is tracked, and whether it softens is one of the things the parent report shows.
+
+---
+
+## 20. Gaps found on review
+
+Things the plan above did not cover. Each has a proposed default; the first group cannot be defaulted and needs your answer.
+
+### 20.1 Facts only you have
+
+| # | Question | Why it matters |
+|---|----------|----------------|
+| 1 | How many children, what ages and school years, and are they in school now or home-educated? | Decides which year group is built first and which mode is tested first |
+| 2 | Any diagnosed or suspected needs (dyslexia, ADHD, autism, speech, hearing, sight)? | Changes session length, text, pace and how much voice can be relied on |
+| 3 | What will they use: tablet, laptop, phone? Touchscreen? Headset? | The whiteboard, handwriting and voice are designed around the device |
+| 4 | Allergies and dietary rules for cooking | Recipes must respect them from day one |
+| 5 | Is Arabic for general use, for reading the Qur'an, or both? Should religious education be included? | Changes the Arabic content and whether a subject is added. I have not assumed either way |
+| 6 | Monthly budget ceiling | Sets the model and voice choices and the spending caps |
+| 7 | What does success look like in six months? | Without a target, nothing can be judged |
+
+### 20.2 Accounts and money you need to set up
+
+- **An Anthropic API account with credit.** Your Claude subscription pays for building; it does not pay for Nova's conversations with the children. Those are billed separately per use, and need a spending cap set on day one.
+- **Speech service accounts** (chosen in phase 4).
+- **Nova's illustrations:** an illustrator, or AI-generated images that you approve. Not yet costed.
+
+### 20.3 Missing from the product
+
+| # | Gap | Proposed default |
+|---|-----|------------------|
+| 8 | **Help with school homework.** A child in school brings work the tutor did not set | A "help me with this" mode: photo or type the task; Nova coaches without doing it; the topic is noted in the record |
+| 9 | **Matching what school is teaching.** In tutor mode the plan should follow the class, not run ahead on its own | Parent can enter this term's school topics, spelling lists and test dates; the planner puts them first |
+| 10 | **Parent talking to Nova.** "She has a times-tables test on Friday" | A message box on the parent page that goes into the next plan |
+| 11 | **Reading material.** Phonics needs decodable books; comprehension needs passages; these are copyrighted | Original texts written to each phonics stage and reading level, plus out-of-copyright classics; Nova also listens to the child read their own books |
+| 12 | **Hearing reading aloud** | Child reads to Nova; speech recognition marks fluency and stumbles. Accuracy on young readers is uncertain and is tested in phase 4 |
+| 13 | **Handwriting, spelling and written working** | Photo upload and, on a touchscreen, writing on the whiteboard. Spelling as short daily practice |
+| 14 | **School-mode subjects not on your list:** computing, PE, music, history, geography, design and technology | History and geography are already added. PE and music as off-screen blocks with ideas, not lessons. Computing later. Confirm or remove |
+| 15 | **How children log in.** A six-year-old cannot manage a password | Parent signs in on the device once; each child taps their picture and a short PIN |
+| 16 | **Siblings sharing a device, and a sibling talking in the background** | Profile switch on the home screen; hold-to-talk limits stray speech |
+| 17 | **Term dates, holidays, sick days** | An English term calendar by default, editable; lighter holiday mode; missed days roll forward |
+| 18 | **Rewards.** Points for everything can make children work for points, not learning | XP for effort and completed sessions only, never for speed; the game world unlocks after the session, not during |
+| 19 | **Reminders** | Email to the parent first; phone notifications later |
+| 20 | **Year 7.** Age 11–12 is secondary school with a different curriculum, and some families want 11+ or SATs preparation | Years 1–6 first; Year 7 maths and English after; exam preparation as an optional add-on |
+
+### 20.4 Missing from how it is checked
+
+| # | Gap | Proposed default |
+|---|-----|------------------|
+| 21 | **No qualified person checks the teaching.** Neither of us is a UK primary teacher | A primary teacher reviews sample lessons and the item bank for each subject before it goes live, and a native speaker reviews Arabic, French and Spanish. Paid by the hour; not yet costed |
+| 22 | **Children do not try it until the end** | Your children try a 10-minute session at the end of phase 3 and again at phase 4, not only in phase 11 |
+| 23 | **No national yardstick** | Past SATs and phonics-check papers, which are published free, used for the half-termly checks |
+| 24 | **Research citations and the curriculum licence are still unverified** | First task of phase 0, unchanged |
+
+### 20.5 Missing from running it
+
+| # | Gap | Proposed default |
+|---|-----|------------------|
+| 25 | **No timeline.** | Rough only: phases 0–4, a talking maths and English tutor for one year group, is the first milestone and the bulk of the risk. Everything after widens it. I will estimate each phase when it starts, from how the previous one went |
+| 26 | **Who is told when it breaks at 4pm** | Error tracking and an uptime check that email you; a status line on the parent page |
+| 27 | **Spending caps and alerts** | A daily cap per child and a monthly cap overall, with an email at 80% |
+| 28 | **Where the data lives** | Railway region set to Europe; the AI and speech vendors process in the US unless a UK or EU option is chosen. Stated plainly on the parent page |
+| 29 | **How long data is kept** | Transcripts for 12 months, the learner record until you delete it, audio not at all by default |
+| 30 | **Poor internet** | Session state saved after every step; homework and reading work offline and sync later |
+| 31 | **The product's name.** The code says both "NextGen AI Tutor" and "Cosmic Academy" | Your choice; no default |
