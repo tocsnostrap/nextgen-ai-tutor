@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 
-from ..auth import verify_token
+from ..auth import verify_token, current_child_id
 from ....core.database import get_db, GamificationProfile
 
 logger = logging.getLogger(__name__)
@@ -128,13 +128,7 @@ class AwardXPRequest(BaseModel):
     metadata: Dict[str, Any] = {}
 
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 @router.get("/profile")

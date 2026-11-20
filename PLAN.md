@@ -1,7 +1,8 @@
 # NextGen AI Tutor — Build Plan
 
-Status: **approved; building. Phase 0 is done** (2026-11-20). Next: phase 1, accounts.
-Preview: https://web-production-19ef5bd5.up.railway.app (demo mode, no real data, Railway project `nextgen-ai-tutor`).
+Status: **approved; building. Phases 0 and 1 are done** (2026-11-20). Next: phase 2, curriculum.
+Preview: https://web-production-19ef5bd5.up.railway.app (real accounts; Railway project `nextgen-ai-tutor`).
+Left over from phase 1: the old chat's in-session coaching counters (`metacognitive_coach.py`) are still held in memory; that module is replaced in phase 3.
 Base code: branch `claude/advance-ai-tutoring-platform-rPOYS` (newer than `main`).
 Working branch: `claude/keen-ramanujan-0xfo9j`.
 
@@ -638,7 +639,7 @@ Things the plan above did not cover. Each has a proposed default; the first grou
 
 | # | Question | Answer | What it changes |
 |---|----------|--------|-----------------|
-| 1 | Children | Two. **Ages, school years and whether they are in school are still needed** | Decides the first year group and the first mode |
+| 1 | Children | Two. Build for the whole 6–12 range, not for specific ages | Every year group (Years 1–7) is in scope. The first end-to-end slice is **Year 3 maths and English**, the middle of the range, then it widens to Years 1–6 and last to Year 7. Tutor mode is tested first |
 | 2 | Diagnosed or suspected needs | None | Standard pace and text. The dyslexia-friendly and read-aloud options stay, since they cost little and help any child |
 | 3 | Devices | Tablet and laptop | Runs in the browser on both, no app store. Touch-first: big targets, finger drawing on the tablet whiteboard, typing on the laptop. Built-in microphones; a headset is recommended, not required |
 | 4 | Allergies and dietary rules | None | No recipe filtering. The field stays on the parent page in case it changes |

@@ -1941,6 +1941,8 @@ transition:color 0.2s;
 </head>
 <body>
 
+<a href="/account" id="switchChild" style="position:fixed;left:12px;bottom:12px;z-index:9000;padding:10px 14px;border-radius:999px;background:rgba(15,15,42,0.9);border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;font-size:13px;text-decoration:none">Switch learner</a>
+
 <div id="confettiContainer"></div>
 <div id="screenFlash" class="screen-flash"></div>
 <div class="nova-companion" id="novaCompanion">
@@ -2685,8 +2687,36 @@ stroke="var(--lime)" stroke-dasharray="314" stroke-dashoffset="110"/>
 <script src="/frontend/whiteboard.js"></script>
 <script src="/frontend/offline-store.js"></script>
 <script>
+// ---- the signed-in child, set by /account ----
+const CHILD_TOKEN = localStorage.getItem('nt_child_token');
+let CHILD = null;
+try { CHILD = JSON.parse(localStorage.getItem('nt_child')); } catch (e) {}
+if (!CHILD_TOKEN || !CHILD) { location.replace('/account'); throw new Error('No child session'); }
+
+// Everything this page stores is kept per child, so siblings on one device
+// do not share progress. Sign-in keys (nt_*) are left alone.
+(function () {
+    const prefix = 'c:' + CHILD.id + ':', sp = Storage.prototype;
+    const get = sp.getItem, set = sp.setItem, remove = sp.removeItem;
+    const key = k => String(k).startsWith('nt_') ? k : prefix + k;
+    sp.getItem = function (k) { return get.call(this, key(k)); };
+    sp.setItem = function (k, v) { return set.call(this, key(k), v); };
+    sp.removeItem = function (k) { return remove.call(this, key(k)); };
+})();
+
+// The parent already gave the name and school year; skip the old sign-up screens.
+if (!localStorage.getItem('onboarded')) {
+    const age = CHILD.school_year + 5;
+    localStorage.setItem('ob_profile', JSON.stringify({
+        name: CHILD.display_name, age: age, ageGroup: age <= 8 ? 'junior' : 'rising',
+        subjects: ['math', 'reading', 'science'], avatar: 'initials',
+        onboarded: true, onboardedAt: new Date().toISOString()
+    }));
+    localStorage.setItem('onboarded', 'true');
+}
+
 const API_BASE = '/api/v1';
-const AUTH_HEADER = 'Bearer access_token_user_123';
+const AUTH_HEADER = 'Bearer ' + CHILD_TOKEN;
 let currentSubject = 'math';
 let currentDifficulty = 'medium';
 let messageCount = 0;
@@ -2701,7 +2731,11 @@ function apiCall(endpoint, method='GET', body=null) {
         headers: {'Content-Type':'application/json','Authorization': AUTH_HEADER}
     };
     if (body) opts.body = JSON.stringify(body);
-    return fetch(API_BASE + endpoint, opts).then(r => r.ok ? r.json() : null).catch(() => null);
+    return fetch(API_BASE + endpoint, opts).then(r => {
+        // Session ended: back to "who's learning?"
+        if (r.status === 401 || r.status === 403) { location.replace('/account'); return null; }
+        return r.ok ? r.json() : null;
+    }).catch(() => null);
 }
 
 const SUBJ_ICONS = {math:'math',reading:'reading',writing:'pencil',science:'science',social_studies:'globe',break:'sparkle',review:'sync',enrichment:'rocket'};

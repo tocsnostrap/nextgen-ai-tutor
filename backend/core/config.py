@@ -26,9 +26,6 @@ class Settings(BaseSettings):
     # The page is served by this app, so no cross-origin access is needed by default.
     CORS_ORIGINS: List[str] = Field(default=[])
 
-    # Lets the built-in demo child (the page's hard-coded token) use the app.
-    # For previews with no real data only. Never enable alongside real children.
-    DEMO_MODE: bool = Field(default=False)
 
     DATABASE_URL: str = Field(
         default="postgresql+asyncpg://postgres:password@localhost:5432/ai_tutor"
@@ -44,7 +41,10 @@ class Settings(BaseSettings):
     SECRET_KEY: Optional[str] = Field(default=None)
     JWT_ALGORITHM: str = Field(default="HS256")
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30)
-    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = Field(default=7)
+    # A family device stays signed in for this long without the parent's password.
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = Field(default=90)
+    # How long a child's session lasts after the PIN is entered.
+    CHILD_SESSION_HOURS: int = Field(default=12)
 
     # Claude models. TUTOR_MODEL teaches, plans and marks; FAST_MODEL does routing.
     TUTOR_MODEL: str = Field(default="claude-sonnet-5-5")

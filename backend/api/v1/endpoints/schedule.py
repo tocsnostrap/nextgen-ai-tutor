@@ -7,7 +7,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..auth import verify_token
+from ..auth import verify_token, current_child_id
 from ....core.database import get_db, CurriculumStandard
 from ....schedule_engine import (
     generate_daily_schedule,
@@ -26,13 +26,7 @@ router = APIRouter()
 security = HTTPBearer()
 
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 class CompleteBlockRequest(BaseModel):

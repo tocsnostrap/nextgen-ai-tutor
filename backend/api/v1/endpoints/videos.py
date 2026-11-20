@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
-from ..auth import verify_token
+from ..auth import verify_token, current_child_id
 from ....core.database import get_db, VideoLesson, VideoProgress
 from ....unified_adaptive_engine import record_video_interaction, get_video_recommendations
 
@@ -130,13 +130,7 @@ SUBJECT_THUMBNAILS = {
 }
 
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 def _format_duration(seconds: int) -> str:

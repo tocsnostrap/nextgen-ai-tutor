@@ -163,6 +163,11 @@ async def root():
     return {"message": "Welcome to NextGen AI Tutor API", "version": "1.0.0"}
 
 
+@app.get("/account")
+async def account_page():
+    return FileResponse(os.path.join(frontend_dir, "account.html"), media_type="text/html")
+
+
 @app.get("/parent")
 async def parent_dashboard():
     parent_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "parent_dashboard.html")

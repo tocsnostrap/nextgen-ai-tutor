@@ -109,3 +109,37 @@ for skill in [
     "variables", "loops", "functions", "conditionals", "algorithms",
 ]:
     bkt_lite.initialize_skill(skill)
+
+
+async def load_mastery(db, user_id: str) -> None:
+    """Replace this child's in-memory state with what is saved in the database."""
+    from sqlalchemy import select
+    from .core.database import SkillMastery
+
+    rows = (await db.execute(select(SkillMastery).where(SkillMastery.user_id == user_id))).scalars().all()
+    bkt_lite.student_states[user_id] = {
+        r.skill_id: {
+            "p_knowledge": r.p_knowledge,
+            "total_attempts": r.total_attempts,
+            "correct_attempts": r.correct_attempts,
+        }
+        for r in rows
+    }
+
+
+async def save_mastery(db, user_id: str, skill_id: str) -> None:
+    """Write one skill's current state to the database. Call after `bkt_lite.update`."""
+    from sqlalchemy.dialects.postgresql import insert
+    from .core.database import SkillMastery
+
+    state = bkt_lite.student_states.get(user_id, {}).get(skill_id)
+    if not state:
+        return
+    values = {
+        "p_knowledge": state["p_knowledge"],
+        "total_attempts": state["total_attempts"],
+        "correct_attempts": state["correct_attempts"],
+    }
+    stmt = insert(SkillMastery).values(user_id=user_id, skill_id=skill_id, **values)
+    stmt = stmt.on_conflict_do_update(constraint="uq_skill_mastery_user_skill", set_=values)
+    await db.execute(stmt)

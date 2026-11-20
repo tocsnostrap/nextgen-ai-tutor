@@ -8,9 +8,11 @@ An AI tutor for children aged 6–12, following England's National Curriculum. *
 
 ## Where it stands
 
-Phase 0 of the plan is done: the inherited demo has been cleaned up, its security holes closed, and it deploys. It is **not yet a tutor**. There are no real accounts (phase 1), the curriculum is placeholder data (phase 2), and the chat is the old prototype (replaced in phase 3).
+Phases 0 and 1 of the plan are done: the inherited demo has been cleaned up, its security holes closed, it deploys, and it has real accounts. It is **not yet a tutor**: the curriculum is placeholder data (phase 2) and the chat is the old prototype (replaced in phase 3).
 
-Until phase 1, the page only works with `DEMO_MODE=true`, which lets one built-in demo child use it. Do not put real children's data in a demo-mode deployment.
+## Accounts
+
+A parent creates an account at `/account` and adds each child (name, school year, picture, 4-digit PIN). The device stays signed in; a child taps their picture and enters their PIN. Each child's record is separate and saved in Postgres. Adding children and opening the parent dashboard (`/parent`) ask for the parent's password.
 
 ## Run it locally
 
@@ -19,7 +21,7 @@ Needs Python 3.12 and Postgres.
 ```bash
 python3.12 -m venv .venv && . .venv/bin/activate
 pip install -r requirements-dev.txt
-cp .env.example .env          # set DATABASE_URL; set DEMO_MODE=true to click around
+cp .env.example .env          # set DATABASE_URL
 alembic upgrade head          # creates the tables
 uvicorn backend.main:app --port 5000
 ```
@@ -54,7 +56,6 @@ The `Dockerfile` applies migrations and starts the server on Railway's `PORT`; `
 | `SECRET_KEY` | Long random string |
 | `ENVIRONMENT` | `production` |
 | `ANTHROPIC_API_KEY` | From console.anthropic.com |
-| `DEMO_MODE` | `true` for a preview with no real data; otherwise unset |
 
 All settings are listed in `.env.example`.
 
@@ -66,7 +67,7 @@ backend/            FastAPI app
   core/             settings, database models
   api/v1/           routes
   claude_ai_service.py, multi_agent_tutor.py   prototype tutor (replaced in phase 3)
-frontend/           the game-world page and parent dashboard
+frontend/           account.html (sign in, who's learning), index.html (game world), parent dashboard
 migrations/         Alembic
 tests/
 ```

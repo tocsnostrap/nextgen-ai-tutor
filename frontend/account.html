@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextGen AI Tutor</title>
+<style>
+:root{
+  --bg:#0a0a1a; --panel:#13132e; --line:rgba(255,255,255,0.12);
+  --cyan:#00f5ff; --purple:#8b5cf6; --lime:#00ff88; --red:#ff6b81;
+  --text:#e9edf5; --dim:#a3aec2;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  background:radial-gradient(1200px 700px at 50% -10%, #1b1b4a 0%, var(--bg) 60%);
+  color:var(--text); font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:17px; line-height:1.45; display:flex; justify-content:center; padding:32px 16px 48px;
+}
+main{width:100%; max-width:760px}
+h1{font-size:32px; margin:8px 0 6px; text-align:center; text-wrap:balance}
+.sub{color:var(--dim); text-align:center; margin:0 0 28px}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:24px}
+.narrow{max-width:440px; margin:0 auto}
+label{display:block; font-size:15px; color:var(--dim); margin:16px 0 6px}
+input,select{
+  width:100%; padding:14px 16px; font-size:17px; color:var(--text); background:#0c0c22;
+  border:1px solid var(--line); border-radius:12px; outline:none;
+}
+input:focus,select:focus,button:focus-visible,.kid:focus-visible{outline:3px solid var(--cyan); outline-offset:2px}
+button{
+  font:inherit; cursor:pointer; border:0; border-radius:14px; padding:14px 20px; min-height:52px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple)); color:#07071a; font-weight:700;
+}
+button.ghost{background:transparent; color:var(--text); border:1px solid var(--line); font-weight:600}
+button.link{background:none; color:var(--cyan); padding:8px; min-height:44px; font-weight:600}
+button:disabled{opacity:.5; cursor:default}
+.full{width:100%; margin-top:22px}
+.tabs{display:flex; gap:8px; margin-bottom:8px}
+.tabs button{flex:1}
+.err{color:var(--red); min-height:24px; margin:12px 0 0; font-size:15px}
+.hidden{display:none !important}
+
+.kids{display:flex; flex-wrap:wrap; justify-content:center; gap:16px}
+.kid{
+  background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:22px 12px;
+  text-align:center; cursor:pointer; color:var(--text); min-height:170px; width:176px; max-width:calc(50% - 8px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  transition:transform .12s ease, border-color .12s ease;
+}
+.kid:hover{transform:translateY(-3px); border-color:var(--cyan)}
+.kid .face{font-size:64px; line-height:1}
+.kid .name{font-size:20px; font-weight:700; overflow-wrap:anywhere}
+.kid .yr{font-size:14px; color:var(--dim)}
+.kid.add{border-style:dashed; background:transparent; color:var(--dim)}
+.foot{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:28px}
+
+.avatars{display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+.avatars button{font-size:32px; padding:8px; min-height:60px; background:#0c0c22; border:2px solid transparent}
+.avatars button.on{border-color:var(--cyan)}
+
+.dots{display:flex; gap:14px; justify-content:center; margin:18px 0}
+.dots span{width:20px; height:20px; border-radius:50%; border:2px solid var(--dim)}
+.dots span.on{background:var(--cyan); border-color:var(--cyan)}
+.pad{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:320px; margin:0 auto}
+.pad button{font-size:26px; min-height:68px; background:#0c0c22; color:var(--text); border:1px solid var(--line)}
+.pin-face{font-size:72px; text-align:center; line-height:1}
+@media (prefers-reduced-motion:reduce){.kid{transition:none}}
+</style>
+</head>
+<body>
+<main>
+
+<!-- Sign in or create an account (parent) -->
+<section id="vAuth" class="hidden">
+  <h1>NextGen AI Tutor</h1>
+  <p class="sub">A grown-up signs in once on this device. After that, children just tap their picture.</p>
+  <div class="panel narrow">
+    <div class="tabs">
+      <button id="tabIn" type="button">Sign in</button>
+      <button id="tabUp" type="button" class="ghost">Create account</button>
+    </div>
+    <form id="authForm" novalidate>
+      <div id="nameRow" class="hidden">
+        <label for="fName">Your name</label>
+        <input id="fName" autocomplete="name">
+      </div>
+      <label for="fEmail">Email</label>
+      <input id="fEmail" type="email" autocomplete="email" inputmode="email">
+      <label for="fPass">Password <span id="passHint" class="hidden">(at least 8 characters)</span></label>
+      <input id="fPass" type="password" autocomplete="current-password">
+      <p id="authErr" class="err" role="alert"></p>
+      <button id="authGo" class="full" type="submit">Sign in</button>
+    </form>
+  </div>
+</section>
+
+<!-- Who's learning? -->
+<section id="vPick" class="hidden">
+  <h1>Who's learning today?</h1>
+  <p class="sub" id="pickSub">Tap your picture.</p>
+  <div id="kids" class="kids"></div>
+  <div class="foot">
+    <button class="link" id="goParent" type="button">Parent dashboard</button>
+    <button class="link" id="goOut" type="button">Sign out</button>
+  </div>
+</section>
+
+<!-- Child's PIN -->
+<section id="vPin" class="hidden">
+  <div class="pin-face" id="pinFace"></div>
+  <h1 id="pinTitle">Hello!</h1>
+  <p class="sub">Tap your secret 4 numbers.</p>
+  <div class="dots" id="dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <p id="pinErr" class="err" role="alert" style="text-align:center"></p>
+  <div class="pad" id="pad"></div>
+  <div class="foot"><button class="link" id="pinBack" type="button">Not me</button></div>
+</section>
+
+<!-- Grown-up check -->
+<section id="vGate" class="hidden">
+  <h1>Grown-ups only</h1>
+  <p class="sub">Enter your account password to continue.</p>
+  <div class="panel narrow">
+    <form id="gateForm" novalidate>
+      <label for="gPass">Password</label>
+      <input id="gPass" type="password" autocomplete="current-password">
+      <p id="gateErr" class="err" role="alert"></p>
+      <button class="full" type="submit">Continue</button>
+      <button class="ghost full" type="button" id="gateBack" style="margin-top:10px">Back</button>
+    </form>
+  </div>
+</section>
+
+<!-- Add a child -->
+<section id="vAdd" class="hidden">
+  <h1>Add a child</h1>
+  <p class="sub">You can change any of this later.</p>
+  <div class="panel narrow">
+    <form id="addForm" novalidate>
+      <label for="cName">First name or nickname</label>
+      <input id="cName" maxlength="60" autocomplete="off">
+      <label for="cYear">School year</label>
+      <select id="cYear"></select>
+      <label>Picture</label>
+      <div class="avatars" id="avatars"></div>
+      <label for="cPin">A 4-number PIN your child will remember</label>
+      <input id="cPin" inputmode="numeric" maxlength="4" autocomplete="off" pattern="[0-9]{4}">
+      <p id="addErr" class="err" role="alert"></p>
+      <button class="full" type="submit">Add child</button>
+      <button class="ghost full" type="button" id="addBack" style="margin-top:10px">Back</button>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<script src="/frontend/auth.js"></script>
+<script>
+const FACES = {star:'⭐',rocket:'🚀',cat:'🐱',dog:'🐶',fox:'🦊',owl:'🦉',dino:'🦖',unicorn:'🦄',robot:'🤖',football:'⚽'};
+const $ = id => document.getElementById(id);
+const views = ['vAuth','vPick','vPin','vGate','vAdd'];
+function show(id){ views.forEach(v => $(v).classList.toggle('hidden', v !== id)); window.scrollTo(0,0); }
+
+// ---------- sign in / create account
+let creating = false;
+function setMode(up){
+  creating = up;
+  $('tabIn').className = up ? 'ghost' : '';
+  $('tabUp').className = up ? '' : 'ghost';
+  $('nameRow').classList.toggle('hidden', !up);
+  $('passHint').classList.toggle('hidden', !up);
+  $('fPass').autocomplete = up ? 'new-password' : 'current-password';
+  $('authGo').textContent = up ? 'Create account' : 'Sign in';
+  $('authErr').textContent = '';
+}
+$('tabIn').onclick = () => setMode(false);
+$('tabUp').onclick = () => setMode(true);
+
+$('authForm').onsubmit = async e => {
+  e.preventDefault();
+  const email = $('fEmail').value.trim(), password = $('fPass').value, full_name = $('fName').value.trim();
+  if (!email || !password || (creating && !full_name)) { $('authErr').textContent = 'Please fill in every box.'; return; }
+  $('authGo').disabled = true;
+  const r = creating
+    ? await NT.post('/auth/register', {email, password, full_name})
+    : await NT.post('/auth/login', {email, password});
+  $('authGo').disabled = false;
+  if (!r.ok) { $('authErr').textContent = NT.message(r.data, 'Something went wrong. Please try again.'); return; }
+  NT.saveParent(r.data);
+  sessionStorage.setItem('nt_grownup', '1');
+  $('fPass').value = '';
+  loadKids();
+};
+
+// ---------- who's learning
+let kids = [];
+async function loadKids(){
+  const r = await NT.parent('/family/children');
+  if (!r.ok) { show('vAuth'); return; }
+  kids = r.data.children;
+  const box = $('kids'); box.textContent = '';
+  kids.forEach(k => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'kid';
+    const face = document.createElement('span'); face.className = 'face'; face.textContent = FACES[k.avatar] || '⭐';
+    const name = document.createElement('span'); name.className = 'name'; name.textContent = k.display_name;
+    const yr = document.createElement('span'); yr.className = 'yr'; yr.textContent = 'Year ' + k.school_year;
+    b.append(face, name, yr);
+    b.onclick = () => openPin(k);
+    box.append(b);
+  });
+  const add = document.createElement('button');
+  add.type = 'button'; add.className = 'kid add';
+  add.innerHTML = '<span class="face">＋</span><span class="name">Add a child</span><span class="yr">Grown-ups only</span>';
+  add.onclick = () => gate(openAdd);
+  box.append(add);
+  $('pickSub').textContent = kids.length ? 'Tap your picture.' : 'No children yet. A grown-up can add one.';
+  show('vPick');
+}
+$('goParent').onclick = () => gate(() => { location.href = '/parent'; });
+$('goOut').onclick = () => { NT.signOut(); show('vAuth'); };
+
+// ---------- PIN pad
+let pinKid = null, pin = '';
+function drawDots(){ [...$('dots').children].forEach((d,i) => d.classList.toggle('on', i < pin.length)); }
+function openPin(k){
+  pinKid = k; pin = ''; drawDots();
+  $('pinFace').textContent = FACES[k.avatar] || '⭐';
+  $('pinTitle').textContent = 'Hello, ' + k.display_name + '!';
+  $('pinErr').textContent = '';
+  show('vPin');
+}
+async function press(d){
+  if (d === 'del') { pin = pin.slice(0,-1); drawDots(); return; }
+  if (pin.length >= 4) return;
+  pin += d; drawDots();
+  if (pin.length < 4) return;
+  const r = await NT.parent('/family/children/' + pinKid.id + '/session', 'POST', {pin});
+  if (r.status === 401 && !NT.signedIn) { show('vAuth'); return; }
+  if (!r.ok) { pin = ''; drawDots(); $('pinErr').textContent = NT.message(r.data, "That didn't work. Have another go."); return; }
+  NT.saveChild(r.data);
+  location.href = '/';
+}
+(function buildPad(){
+  ['1','2','3','4','5','6','7','8','9','','0','del'].forEach(d => {
+    if (d === '') { $('pad').append(document.createElement('span')); return; }
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = d === 'del' ? '⌫' : d;
+    if (d === 'del') b.setAttribute('aria-label', 'Delete');
+    b.onclick = () => press(d);
+    $('pad').append(b);
+  });
+})();
+document.addEventListener('keydown', e => {
+  if ($('vPin').classList.contains('hidden')) return;
+  if (/^[0-9]$/.test(e.key)) press(e.key);
+  else if (e.key === 'Backspace') press('del');
+});
+$('pinBack').onclick = () => show('vPick');
+
+// ---------- grown-up check
+let afterGate = null;
+function gate(next){
+  if (NT.grownUp) { next(); return; }
+  afterGate = next; $('gPass').value = ''; $('gateErr').textContent = ''; show('vGate'); $('gPass').focus();
+}
+$('gateForm').onsubmit = async e => {
+  e.preventDefault();
+  if (await NT.confirmGrownUp($('gPass').value)) { const n = afterGate; afterGate = null; n(); }
+  else $('gateErr').textContent = "That password isn't right.";
+};
+$('gateBack').onclick = () => show('vPick');
+
+// ---------- add a child
+let avatar = 'star';
+function openAdd(){
+  $('cName').value = ''; $('cPin').value = ''; $('addErr').textContent = '';
+  show('vAdd'); $('cName').focus();
+}
+(function buildAdd(){
+  for (let y = 1; y <= 7; y++) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = 'Year ' + y + ' (age ' + (y + 4) + '–' + (y + 5) + ')';
+    $('cYear').append(o);
+  }
+  Object.entries(FACES).forEach(([key, face]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = face; b.setAttribute('aria-label', key);
+    if (key === avatar) b.className = 'on';
+    b.onclick = () => { avatar = key; [...$('avatars').children].forEach(x => x.classList.toggle('on', x === b)); };
+    $('avatars').append(b);
+  });
+})();
+$('addForm').onsubmit = async e => {
+  e.preventDefault();
+  const body = {display_name: $('cName').value.trim(), school_year: +$('cYear').value, pin: $('cPin').value, avatar};
+  if (!body.display_name) { $('addErr').textContent = "Please enter your child's name."; return; }
+  if (!/^\d{4}$/.test(body.pin)) { $('addErr').textContent = 'The PIN needs exactly 4 numbers.'; return; }
+  const r = await NT.parent('/family/children', 'POST', body);
+  if (!r.ok) { $('addErr').textContent = NT.message(r.data, 'Could not add the child. Please try again.'); return; }
+  loadKids();
+};
+$('addBack').onclick = () => show('vPick');
+
+// ---------- start
+NT.clearChild();              // arriving here always ends the current child's session
+if (NT.signedIn) loadKids(); else show('vAuth');
+</script>
+</body>
+</html>

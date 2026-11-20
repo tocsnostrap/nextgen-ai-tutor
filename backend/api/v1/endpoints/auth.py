@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ....core.config import settings
 from ....core.database import get_db, User
-from ..auth import verify_token, create_access_token, create_refresh_token
+from ..auth import verify_token, create_access_token, create_refresh_token, verify_refresh_token
 
 logger = logging.getLogger(__name__)
 
@@ -23,19 +23,17 @@ security = HTTPBearer()
 
 
 class UserCreate(BaseModel):
+    """A parent signing up. Children are added afterwards as profiles."""
     email: EmailStr
-    username: str
     full_name: str
     password: str
-    role: str = "student"
 
-    @field_validator("username")
+    @field_validator("full_name")
     @classmethod
-    def validate_username(cls, v):
-        if len(v) < 3:
-            raise ValueError("Username must be at least 3 characters long")
-        if len(v) > 100:
-            raise ValueError("Username must be less than 100 characters")
+    def validate_full_name(cls, v):
+        v = v.strip()
+        if not 1 <= len(v) <= 255:
+            raise ValueError("Please enter your name")
         return v
 
     @field_validator("password")
@@ -43,13 +41,6 @@ class UserCreate(BaseModel):
     def validate_password(cls, v):
         if len(v) < 8:
             raise ValueError("Password must be at least 8 characters long")
-        return v
-
-    @field_validator("role")
-    @classmethod
-    def validate_role(cls, v):
-        if v not in ["student", "teacher", "admin"]:
-            raise ValueError("Role must be student, teacher, or admin")
         return v
 
 
@@ -89,24 +80,22 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 async def register_user(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     try:
         result = await db.execute(
-            select(User).where(
-                (User.email == user_data.email) | (User.username == user_data.username)
-            )
+            select(User).where(User.email == user_data.email)
         )
         existing_user = result.scalar_one_or_none()
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail="User with this email or username already exists"
+                detail="An account with this email already exists"
             )
 
         new_user = User(
             email=user_data.email,
-            username=user_data.username,
+            username=user_data.email,  # the column is required and unique; email serves
             full_name=user_data.full_name,
             hashed_password=hash_password(user_data.password),
-            # Roles are never chosen by the person signing up.
-            role="student",
+            # Everyone who signs up is a parent. Roles are never chosen by the caller.
+            role="parent",
             is_active=True,
             is_verified=False,
             preferences={},
@@ -170,6 +159,25 @@ async def login_user(login_data: UserLogin, db: AsyncSession = Depends(get_db)):
     except Exception as e:
         logger.error(f"Login failed: {e}")
         raise HTTPException(status_code=500, detail="Login failed")
+
+
+@router.post("/refresh", response_model=TokenResponse)
+async def refresh_tokens(body: RefreshTokenRequest, db: AsyncSession = Depends(get_db)):
+    user_id = verify_refresh_token(body.refresh_token)
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Please sign in again")
+    user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
+    if not user or not user.is_active:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Please sign in again")
+    return TokenResponse(
+        access_token=create_access_token(str(user.id), user.email, user.role),
+        refresh_token=create_refresh_token(str(user.id)),
+        token_type="bearer",
+        expires_in=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        user_id=str(user.id),
+        email=user.email,
+        role=user.role,
+    )
 
 
 @router.get("/me")

@@ -8,10 +8,10 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from ..auth import verify_token
+from ..auth import verify_token, current_child_id
 from ....conversational_ai import conversational_ai
 from ....core.database import get_db, ChatMessage
-from ....bkt_lite import bkt_lite
+from ....bkt_lite import bkt_lite, save_mastery
 from ....unified_adaptive_engine import record_chat_interaction, get_ai_memory_prompt, get_adaptation_context
 from .knowledge_library import detect_enthusiasm_topics, _get_or_create_profile, _upsert_passion_topic
 
@@ -86,13 +86,7 @@ class TTSRequest(BaseModel):
     voice: str = "alloy"
 
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 def _tutor_unavailable(session_id: str) -> Dict[str, Any]:
@@ -257,6 +251,8 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
     correct = result.get("difficulty_adjustment") != "decrease"
     # No mastery update when the tutor did not actually answer.
     bkt_update = bkt_lite.update(user_id, skill, correct) if result.get("ai_powered") else None
+    if bkt_update:
+        await save_mastery(db, user_id, skill)
 
     # ── Enthusiasm detection → update knowledge library ──────────────────────
     try:
@@ -629,7 +625,7 @@ async def get_learning_trajectory(
     from ....learning_trajectory import generate_learning_plan
 
     # Get current skill states from BKT
-    skill_states = bkt_lite.get_all_skills(user_id) if hasattr(bkt_lite, 'get_all_skills') else {}
+    skill_states = bkt_lite.get_all_mastery(user_id)
 
     # Get session history
     history_stmt = (

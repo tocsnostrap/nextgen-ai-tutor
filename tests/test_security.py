@@ -1,9 +1,7 @@
 """One test per hole found in the audit (CODEBASE.md section 4). Each probe must now fail."""
 import uuid
 
-from backend.core.config import settings
-
-from .conftest import DEMO_AUTH
+from .conftest import bearer, make_parent
 
 
 async def test_cannot_download_files_outside_frontend(client):
@@ -17,25 +15,15 @@ async def test_frontend_files_still_served(client):
     assert r.status_code == 200
 
 
-async def test_made_up_token_rejected(client):
-    r = await client.get(
-        "/api/v1/gamification/profile",
-        headers={"Authorization": "Bearer access_token_anyone_i_like"},
-    )
-    assert r.status_code == 401
+async def test_made_up_tokens_rejected(client):
+    for token in ("access_token_user_123", "access_token_anyone_i_like", "not-a-token"):
+        r = await client.get("/api/v1/gamification/profile", headers=bearer(token))
+        assert r.status_code == 401, token
 
 
 async def test_no_token_rejected(client):
     r = await client.get("/api/v1/gamification/profile")
     assert r.status_code in (401, 403)
-
-
-async def test_demo_token_only_works_in_demo_mode(client, monkeypatch):
-    r = await client.get("/api/v1/gamification/profile", headers=DEMO_AUTH)
-    assert r.status_code == 200
-    monkeypatch.setattr(settings, "DEMO_MODE", False)
-    r = await client.get("/api/v1/gamification/profile", headers=DEMO_AUTH)
-    assert r.status_code == 401
 
 
 async def test_cannot_register_as_admin(client):
@@ -44,27 +32,25 @@ async def test_cannot_register_as_admin(client):
         "/api/v1/auth/register",
         json={
             "email": f"{tag}@example.com",
-            "username": f"user{tag}",
             "full_name": "Test Person",
             "password": "Passw0rd!xyz",
             "role": "admin",
         },
     )
     assert r.status_code == 201, r.text
-    assert r.json()["role"] == "student"
+    assert r.json()["role"] == "parent"
 
 
-async def test_cannot_read_another_child(client):
-    r = await client.get("/api/v1/parent/weekly-report/someone_else", headers=DEMO_AUTH)
-    assert r.status_code == 403
-    r = await client.get("/api/v1/parent/weekly-report/user_123", headers=DEMO_AUTH)
-    assert r.status_code == 200
+async def test_removed_user_routes_are_gone(client, family):
+    for path in ("/api/v1/users/", f"/api/v1/users/{family['parent']['user_id']}", "/api/v1/analytics/overview"):
+        r = await client.get(path, headers=family["a_auth"])
+        assert r.status_code == 404, path
 
 
-async def test_xp_award_is_capped(client):
+async def test_xp_award_is_capped(client, family):
     r = await client.post(
         "/api/v1/gamification/award-xp",
-        headers=DEMO_AUTH,
+        headers=family["a_auth"],
         json={"amount": 999999, "reason": "test"},
     )
     assert r.status_code == 200

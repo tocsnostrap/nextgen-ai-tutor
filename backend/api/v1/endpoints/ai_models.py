@@ -12,8 +12,10 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, field_validator
 
 from ....core.config import settings
-from ..auth import verify_token
-from ....bkt_lite import bkt_lite
+from ..auth import verify_token, current_child_id
+from ....bkt_lite import bkt_lite, save_mastery
+from ....core.database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 
@@ -132,13 +134,7 @@ def mock_emotion_detect(text=None):
     }
 
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 @router.get("/info", response_model=List[ModelInfo])
@@ -160,7 +156,7 @@ async def get_models_info(user_id: str = Depends(get_current_user_id)):
 
 
 @router.post("/bkt/predict", response_model=BKTResponse)
-async def predict_bkt(bkt_request: BKTRequest, user_id: str = Depends(get_current_user_id)):
+async def predict_bkt(bkt_request: BKTRequest, user_id: str = Depends(get_current_user_id), db: AsyncSession = Depends(get_db)):
     try:
         if bkt_request.bkt_parameters:
             bkt_lite.initialize_skill(
@@ -174,6 +170,8 @@ async def predict_bkt(bkt_request: BKTRequest, user_id: str = Depends(get_curren
         for i in range(bkt_request.attempts):
             correct = i < bkt_request.successes
             bkt_result = bkt_lite.update(user_id, bkt_request.skill_id, correct=correct)
+        if bkt_request.attempts:
+            await save_mastery(db, user_id, bkt_request.skill_id)
 
         if bkt_request.attempts == 0:
             mastery = bkt_lite.get_mastery(user_id, bkt_request.skill_id)

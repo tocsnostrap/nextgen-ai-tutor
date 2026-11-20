@@ -8,8 +8,11 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
-from ..auth import verify_token
+from uuid import UUID
+
+from ..auth import current_parent
 from ....core.database import (
+    Child,
     get_db, LearningGoal, GamificationProfile, ChatMessage,
     LearningProgress, Assessment, LearningSession
 )
@@ -20,21 +23,18 @@ router = APIRouter()
 security = HTTPBearer()
 
 
-async def get_current_parent(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> Dict[str, str]:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data
+get_current_parent = current_parent
 
 
-def _authorize_child(parent: Dict[str, str], child_user_id: str) -> None:
-    """Until parent-child links exist (PLAN.md phase 1), a user may only read
-    their own record; admins may read any."""
-    if parent.get("role") == "admin" or parent.get("user_id") == child_user_id:
-        return
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to view this child")
+async def _authorize_child(db: AsyncSession, parent: Dict[str, str], child_user_id: str) -> None:
+    """A parent may only see children on their own account."""
+    try:
+        child_uuid = UUID(child_user_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Child not found")
+    owner = (await db.execute(select(Child.parent_id).where(Child.id == child_uuid))).scalar_one_or_none()
+    if owner is None or str(owner) != parent["user_id"]:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Child not found")
 
 
 class LearningGoalRequest(BaseModel):
@@ -50,7 +50,7 @@ async def get_child_progress(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
-    _authorize_child(parent, child_user_id)
+    await _authorize_child(db, parent, child_user_id)
     parent_user_id = parent["user_id"]
 
     gam_result = await db.execute(
@@ -180,7 +180,7 @@ async def get_activity_feed(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
-    _authorize_child(parent, child_user_id)
+    await _authorize_child(db, parent, child_user_id)
     recent_assessments = []
     try:
         assessment_result = await db.execute(
@@ -241,7 +241,7 @@ async def set_learning_goal(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
-    _authorize_child(parent, request.child_user_id)
+    await _authorize_child(db, parent, request.child_user_id)
     parent_user_id = parent["user_id"]
 
     goal = LearningGoal(
@@ -273,7 +273,7 @@ async def get_weekly_report(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
-    _authorize_child(parent, child_user_id)
+    await _authorize_child(db, parent, child_user_id)
     gam_result = await db.execute(
         select(GamificationProfile).where(GamificationProfile.user_id == child_user_id)
     )

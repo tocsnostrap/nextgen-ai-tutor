@@ -108,7 +108,44 @@ class User(Base, TimeStampedMixin):
     __table_args__ = (
         Index("idx_users_email", "email"),
         Index("idx_users_role", "role"),
-        CheckConstraint("role IN ('student', 'teacher', 'admin')", name="ck_user_role"),
+        CheckConstraint("role IN ('parent', 'student', 'teacher', 'admin')", name="ck_user_role"),
+    )
+
+
+class Child(Base, TimeStampedMixin):
+    """A child's profile under a parent account. Its id is the `user_id`
+    that every learner table (XP, chat, schedule, mastery...) is keyed by."""
+    __tablename__ = "children"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+    parent_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    display_name = Column(String(60), nullable=False)
+    school_year = Column(Integer, nullable=False)  # National Curriculum year, 1-7
+    avatar = Column(String(40), nullable=False, default="star")
+    mode = Column(String(20), nullable=False, default="tutor")  # tutor | school
+    pin_hash = Column(String(255), nullable=False)
+    failed_pin_attempts = Column(Integer, nullable=False, default=0)
+    pin_locked_until = Column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        CheckConstraint("school_year BETWEEN 1 AND 7", name="ck_child_school_year"),
+        CheckConstraint("mode IN ('tutor', 'school')", name="ck_child_mode"),
+    )
+
+
+class SkillMastery(Base, TimeStampedMixin):
+    """Saved knowledge-tracing state: one row per child per skill."""
+    __tablename__ = "skill_mastery"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(255), nullable=False, index=True)
+    skill_id = Column(String(255), nullable=False)
+    p_knowledge = Column(Float, nullable=False)
+    total_attempts = Column(Integer, nullable=False, default=0)
+    correct_attempts = Column(Integer, nullable=False, default=0)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "skill_id", name="uq_skill_mastery_user_skill"),
     )
 
 
@@ -497,6 +534,8 @@ __all__ = [
     "get_db",
     "init_db",
     "User",
+    "Child",
+    "SkillMastery",
     "LearningSession",
     "SessionInteraction",
     "EmotionDetection",

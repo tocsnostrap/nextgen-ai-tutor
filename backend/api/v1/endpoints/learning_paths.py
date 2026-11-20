@@ -10,7 +10,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy import select
 
-from ..auth import verify_token
+from ..auth import verify_token, current_child_id
 from ....core.database import get_db, LearningPathModel
 
 logger = logging.getLogger(__name__)
@@ -19,13 +19,7 @@ router = APIRouter()
 security = HTTPBearer()
 
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 LEARNING_PATHS = [

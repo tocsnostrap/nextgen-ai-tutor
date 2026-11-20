@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nextgen-tutor-v1';
+const CACHE_NAME = 'nextgen-tutor-v2';
 const STATIC_ASSETS = [
     '/',
     '/frontend/whiteboard.js',

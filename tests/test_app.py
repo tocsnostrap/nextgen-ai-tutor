@@ -1,5 +1,4 @@
-"""The app starts, serves the page, and answers honestly without a model key."""
-from .conftest import DEMO_AUTH
+"""The app starts, serves its pages, and answers honestly without a model key."""
 
 
 async def test_health(client):
@@ -8,10 +7,11 @@ async def test_health(client):
     assert r.json()["status"] == "healthy"
 
 
-async def test_home_page_served(client):
-    r = await client.get("/")
-    assert r.status_code == 200
-    assert "<html" in r.text.lower()
+async def test_pages_served(client):
+    for path in ("/", "/account", "/parent"):
+        r = await client.get(path)
+        assert r.status_code == 200, path
+        assert "<html" in r.text.lower(), path
 
 
 async def test_home_page_has_no_invented_numbers(client):
@@ -20,16 +20,16 @@ async def test_home_page_has_no_invented_numbers(client):
     assert '<span class="skill-name">Addition</span>' not in r.text  # the old fake skills
 
 
-async def test_schedule_today(client):
-    r = await client.get("/api/v1/schedule/today", headers=DEMO_AUTH)
+async def test_schedule_today(client, family):
+    r = await client.get("/api/v1/schedule/today", headers=family["a_auth"])
     assert r.status_code == 200
     assert r.json()["blocks"]
 
 
-async def test_chat_without_model_key_says_so(client):
+async def test_chat_without_model_key_says_so(client, family):
     r = await client.post(
         "/api/v1/chat/message",
-        headers=DEMO_AUTH,
+        headers=family["a_auth"],
         json={"message": "What is 7 x 8?", "age": 8, "topic": "math"},
     )
     assert r.status_code == 200

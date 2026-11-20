@@ -172,13 +172,12 @@
 
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
-        <h2>👨‍🏫 Parent/Teacher Dashboard</h2>
-        <p>Sign in to view your child's learning progress</p>
-        <input type="email" id="loginEmail" placeholder="Email" value="teacher@example.com">
-        <input type="password" id="loginPassword" placeholder="Password" value="password">
-        <input type="text" id="childUserId" placeholder="Child's User ID" value="demo_user">
-        <button onclick="handleLogin()">Sign In</button>
-        <span class="demo-link" onclick="demoLogin()">Use Demo Access</span>
+        <h2>Parent Dashboard</h2>
+        <p>Enter your account password to continue.</p>
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+        <button onclick="handleLogin()">Continue</button>
+        <p id="loginError" style="color:#ff6b81;min-height:20px;margin-top:10px"></p>
+        <a href="/account" style="color:#a78bfa">Back</a>
     </div>
 </div>
 
@@ -186,14 +185,13 @@
     <header>
         <h1>📊 Parent Dashboard <span>NextGen AI Tutor</span></h1>
         <div class="header-right">
-            <input type="text" id="childIdInput" class="child-selector" placeholder="Child User ID" value="demo_user">
-            <button onclick="loadDashboard()" style="padding:8px 14px;background:#7c3aed;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;">Load</button>
+            <select id="childIdInput" class="child-selector" onchange="loadDashboard()" aria-label="Child"></select>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
     </header>
 
     <div class="dashboard">
-        <a href="/" class="back-link">← Back to Learning App</a>
+        <a href="/account" class="back-link">← Back to who's learning</a>
 
         <div id="overviewCards" class="overview-cards"></div>
 
@@ -253,58 +251,56 @@
     </div>
 </div>
 
+<script src="/frontend/auth.js"></script>
 <script>
 const API_BASE = '/api/v1/parent';
-let authToken = null;
-let currentChildId = 'demo_user';
+let currentChildId = null;
 
-function demoLogin() {
-    authToken = 'access_token_teacher_demo';
-    currentChildId = document.getElementById('childUserId').value || 'demo_user';
+function showDashboard() {
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('dashboardContainer').classList.remove('hidden');
-    document.getElementById('childIdInput').value = currentChildId;
-    loadDashboard();
+    loadChildren();
 }
 
-function handleLogin() {
-    authToken = 'access_token_teacher_demo';
-    currentChildId = document.getElementById('childUserId').value || 'demo_user';
-    document.getElementById('loginOverlay').classList.add('hidden');
-    document.getElementById('dashboardContainer').classList.remove('hidden');
-    document.getElementById('childIdInput').value = currentChildId;
-    loadDashboard();
+async function handleLogin() {
+    if (await NT.confirmGrownUp(document.getElementById('loginPassword').value)) showDashboard();
+    else document.getElementById('loginError').textContent = "That password isn't right.";
 }
 
 function handleLogout() {
-    authToken = null;
-    document.getElementById('loginOverlay').classList.remove('hidden');
-    document.getElementById('dashboardContainer').classList.add('hidden');
+    NT.signOut();
+    location.href = '/account';
 }
 
-async function apiFetch(url) {
-    const res = await fetch(url, {
-        headers: { 'Authorization': `Bearer ${authToken}` },
+async function loadChildren() {
+    const r = await NT.parent('/family/children');
+    if (!r.ok) { location.href = '/account'; return; }
+    const sel = document.getElementById('childIdInput');
+    sel.textContent = '';
+    r.data.children.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c.id; o.textContent = c.display_name + ' (Year ' + c.school_year + ')';
+        sel.append(o);
     });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    return res.json();
+    if (r.data.children.length) loadDashboard();
+}
+
+// The dashboard's own paths start with /api/v1; NT.parent adds that itself.
+async function apiFetch(url) {
+    const r = await NT.parent(url.replace('/api/v1', ''));
+    if (!r.ok) throw new Error(`API error: ${r.status}`);
+    return r.data;
 }
 
 async function apiPost(url, body) {
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    return res.json();
+    const r = await NT.parent(url.replace('/api/v1', ''), 'POST', body);
+    if (!r.ok) throw new Error(`API error: ${r.status}`);
+    return r.data;
 }
 
 async function loadDashboard() {
-    currentChildId = document.getElementById('childIdInput').value || 'demo_user';
+    currentChildId = document.getElementById('childIdInput').value;
+    if (!currentChildId) return;
     try {
         const [progress, feed, report] = await Promise.all([
             apiFetch(`${API_BASE}/child-progress/${currentChildId}`),
@@ -475,6 +471,10 @@ async function createGoal() {
         alert('Failed to create goal. Please try again.');
     }
 }
+
+// Signed in on this device? Ask for the password once per tab, then show the dashboard.
+if (!NT.signedIn) location.href = '/account';
+else if (NT.grownUp) showDashboard();
 </script>
 </body>
 </html>

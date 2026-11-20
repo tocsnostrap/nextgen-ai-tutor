@@ -17,7 +17,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..auth import verify_token
+from ..auth import verify_token, current_child_id
 from ....core.database import get_db, ChildInterestProfile
 
 logger = logging.getLogger(__name__)
@@ -140,13 +140,7 @@ def detect_enthusiasm_topics(message: str) -> List[Dict[str, str]]:
 
 # ── Auth helper ──────────────────────────────────────────────────────────────
 
-async def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    token_data = verify_token(credentials.credentials)
-    if not token_data:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    return token_data["user_id"]
+get_current_user_id = current_child_id
 
 
 # ── DB helpers ───────────────────────────────────────────────────────────────

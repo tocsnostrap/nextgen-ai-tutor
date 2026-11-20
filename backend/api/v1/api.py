@@ -6,7 +6,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, Query
 from typing import List, Optional, Dict, Any
 
-from .endpoints import auth, users, sessions, analytics, ai_models, curriculum, gamification, chat, learning_paths, parent, videos, games, adaptive, schedule, knowledge_library
+from .endpoints import auth, family, ai_models, curriculum, gamification, chat, learning_paths, parent, videos, games, adaptive, schedule, knowledge_library
 from .auth import verify_token
 from ...websocket.manager import websocket_manager
 
@@ -15,9 +15,7 @@ logger = logging.getLogger(__name__)
 api_router = APIRouter()
 
 api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-api_router.include_router(users.router, prefix="/users", tags=["Users"])
-api_router.include_router(sessions.router, prefix="/sessions", tags=["Sessions"])
-api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytics"])
+api_router.include_router(family.router, prefix="/family", tags=["Family"])
 api_router.include_router(ai_models.router, prefix="/ai-models", tags=["AI Models"])
 api_router.include_router(curriculum.router, prefix="/curriculum", tags=["Curriculum"])
 api_router.include_router(gamification.router, prefix="/gamification", tags=["Gamification"])
@@ -34,11 +32,11 @@ api_router.include_router(knowledge_library.router, prefix="/knowledge-library",
 @api_router.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket,
-    token: str = Query(default="demo"),
+    token: Optional[str] = Query(default=None),
     session_token: Optional[str] = Query(None)
 ):
     token_data = verify_token(token) if token else None
-    if not token_data:
+    if not token_data or token_data["role"] != "child":
         await websocket.close(code=1008)
         return
     user_id = token_data["user_id"]
@@ -72,9 +70,6 @@ async def api_root():
         },
         "endpoints": {
             "authentication": "/api/v1/auth",
-            "users": "/api/v1/users",
-            "sessions": "/api/v1/sessions",
-            "analytics": "/api/v1/analytics",
             "ai_models": "/api/v1/ai-models",
             "curriculum": "/api/v1/curriculum",
             "gamification": "/api/v1/gamification",
