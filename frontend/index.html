@@ -2573,15 +2573,15 @@ transition:color 0.2s;
 <div class="analytics-grid">
 <div class="analytics-card">
 <h3>Learning Time (Last 7 Days)</h3>
-<div class="chart-placeholder" style="height:200px"><canvas id="chartTime"></canvas></div>
+<div class="chart-placeholder" style="height:200px"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.45);font-size:13px;text-align:center;padding:0 16px">No data yet. This fills in once real lessons are tracked.</div></div>
 </div>
 <div class="analytics-card">
 <h3>Mastery by Subject</h3>
-<div class="chart-placeholder" style="height:200px"><canvas id="chartMastery"></canvas></div>
+<div class="chart-placeholder" style="height:200px"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.45);font-size:13px;text-align:center;padding:0 16px">No data yet. This fills in once real lessons are tracked.</div></div>
 </div>
 <div class="analytics-card">
 <h3>Emotion Distribution</h3>
-<div class="chart-placeholder" style="height:240px"><canvas id="chartEmotion"></canvas></div>
+<div class="chart-placeholder" style="height:240px"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.45);font-size:13px;text-align:center;padding:0 16px">No data yet. This fills in once real lessons are tracked.</div></div>
 </div>
 <div class="analytics-card">
 <h3>Spaced Repetition Schedule</h3>
@@ -2616,7 +2616,7 @@ transition:color 0.2s;
 </main>
 
 <aside class="right-sidebar">
-<div>
+<div hidden>
 <div class="panel-title">Emotion Monitor</div>
 <div class="emotion-gauge">
 <div class="gauge-circle">
@@ -2638,31 +2638,7 @@ stroke="var(--lime)" stroke-dasharray="314" stroke-dashoffset="110"/>
 <div>
 <div class="panel-title">Active Skills</div>
 <div class="skill-list" id="activeSkills">
-<div class="skill-row">
-<span class="skill-name">Addition</span>
-<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:85%;background:var(--lime)"></div></div>
-<span class="skill-pct" style="color:var(--lime)">85%</span>
-</div>
-<div class="skill-row">
-<span class="skill-name">Subtraction</span>
-<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:72%;background:var(--lime)"></div></div>
-<span class="skill-pct" style="color:var(--lime)">72%</span>
-</div>
-<div class="skill-row">
-<span class="skill-name">Multiplication</span>
-<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:45%;background:var(--cyan)"></div></div>
-<span class="skill-pct" style="color:var(--cyan)">45%</span>
-</div>
-<div class="skill-row">
-<span class="skill-name">Fractions</span>
-<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:28%;background:#ffaa00"></div></div>
-<span class="skill-pct" style="color:#ffaa00">28%</span>
-</div>
-<div class="skill-row">
-<span class="skill-name">Division</span>
-<div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:15%;background:#ff4444"></div></div>
-<span class="skill-pct" style="color:#ff4444">15%</span>
-</div>
+<div style="color:rgba(255,255,255,0.45);font-size:13px;padding:8px 0">No skills practised yet.</div>
 </div>
 </div>
 
@@ -6981,11 +6957,6 @@ function init() {
     setupOfflineMode();
     initOfflineStore();
 
-    for (let i = 0; i < 10; i++) {
-        emotionHistory.push(50 + Math.random() * 30);
-    }
-    drawSparkline();
-    updateEmotionGauge('engaged', 0.65);
 
     if (isOnboarded) {
         const saved = localStorage.getItem('ob_profile');

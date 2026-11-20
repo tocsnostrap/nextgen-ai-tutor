@@ -39,13 +39,7 @@ from ....causal_error_analysis import (
     error_tracker,
 )
 
-# Fallback to OpenAI service if Claude is not configured
-try:
-    from ....ai_service import generate_tutor_response as openai_generate_tutor_response
-    from ....ai_service import generate_quiz_ai, generate_whiteboard_instructions as openai_whiteboard
-    _has_openai_fallback = True
-except ImportError:
-    _has_openai_fallback = False
+from ....core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +93,21 @@ async def get_current_user_id(
     if not token_data:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     return token_data["user_id"]
+
+
+def _tutor_unavailable(session_id: str) -> Dict[str, Any]:
+    """Honest reply when the model cannot be reached, instead of a canned lesson."""
+    return {
+        "response": "I can't think properly right now because my connection isn't working. Please ask a grown-up to check, then try again.",
+        "teaching_strategy": "none",
+        "follow_up_questions": [],
+        "concepts_covered": [],
+        "difficulty_adjustment": "maintain",
+        "session_id": session_id,
+        "ai_powered": False,
+        "model": "none",
+        "tutor_unavailable": True,
+    }
 
 
 @router.post("/message")
@@ -228,7 +237,7 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
         # Fallback to direct Claude call
         result = await claude_generate_tutor_response(request.message, context, conversation_history)
         if not result:
-            result = conversational_ai.generate_response(request.message, context)
+            result = _tutor_unavailable(namespaced_session_id)
 
     # ── Inject metacognitive coaching if warranted ───────────────────────────
     if coaching_intervention and coaching_intervention.urgency in ("high", "medium"):
@@ -246,7 +255,8 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
 
     skill = result["concepts_covered"][0] if result.get("concepts_covered") else topic
     correct = result.get("difficulty_adjustment") != "decrease"
-    bkt_update = bkt_lite.update(user_id, skill, correct)
+    # No mastery update when the tutor did not actually answer.
+    bkt_update = bkt_lite.update(user_id, skill, correct) if result.get("ai_powered") else None
 
     # ── Enthusiasm detection → update knowledge library ──────────────────────
     try:
@@ -315,7 +325,7 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
         "session_id": result.get("session_id", namespaced_session_id),
         "ai_powered": result.get("ai_powered", False),
         "agent_used": result.get("agent_used", "domain_expert"),
-        "model": result.get("model", "claude-opus-4-6"),
+        "model": result.get("model", settings.TUTOR_MODEL),
         "used_thinking": result.get("used_thinking", False),
         "adaptation": adaptation,
         "metacognitive_coaching": result.get("metacognitive_coaching"),
@@ -449,32 +459,9 @@ async def get_whiteboard_content(request: WhiteboardRequest, user_id: str = Depe
 
 @router.post("/tts")
 async def text_to_speech(request: TTSRequest, user_id: str = Depends(get_current_user_id)):
-    try:
-        import os
-        from openai import OpenAI
-
-        base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
-        api_key = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
-        if not base_url or not api_key:
-            raise HTTPException(status_code=503, detail="TTS service not available")
-
-        client = OpenAI(base_url=base_url, api_key=api_key)
-        response = client.audio.speech.create(
-            model="gpt-audio",
-            voice=request.voice,
-            input=request.text,
-        )
-
-        import base64
-        audio_bytes = response.content
-        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-
-        return {"audio": audio_b64, "format": "mp3"}
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.warning("TTS failed: %s", e)
-        return {"audio": None, "format": None, "fallback": True, "text": request.text}
+    # No server speech service is configured yet (PLAN.md phase 4). The page
+    # falls back to the browser's built-in voice when "fallback" is true.
+    return {"audio": None, "format": None, "fallback": True, "text": request.text}
 
 
 class ErrorAnalysisRequest(BaseModel):

@@ -26,10 +26,15 @@ async def get_current_parent(
     token_data = verify_token(credentials.credentials)
     if not token_data:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    if token_data.get("role") not in ("teacher", "admin"):
-        if not credentials.credentials.startswith("access_token_"):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Requires teacher or admin role")
     return token_data
+
+
+def _authorize_child(parent: Dict[str, str], child_user_id: str) -> None:
+    """Until parent-child links exist (PLAN.md phase 1), a user may only read
+    their own record; admins may read any."""
+    if parent.get("role") == "admin" or parent.get("user_id") == child_user_id:
+        return
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to view this child")
 
 
 class LearningGoalRequest(BaseModel):
@@ -45,6 +50,7 @@ async def get_child_progress(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
+    _authorize_child(parent, child_user_id)
     parent_user_id = parent["user_id"]
 
     gam_result = await db.execute(
@@ -174,6 +180,7 @@ async def get_activity_feed(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
+    _authorize_child(parent, child_user_id)
     recent_assessments = []
     try:
         assessment_result = await db.execute(
@@ -234,6 +241,7 @@ async def set_learning_goal(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
+    _authorize_child(parent, request.child_user_id)
     parent_user_id = parent["user_id"]
 
     goal = LearningGoal(
@@ -265,6 +273,7 @@ async def get_weekly_report(
     parent: Dict = Depends(get_current_parent),
     db: AsyncSession = Depends(get_db),
 ):
+    _authorize_child(parent, child_user_id)
     gam_result = await db.execute(
         select(GamificationProfile).where(GamificationProfile.user_id == child_user_id)
     )

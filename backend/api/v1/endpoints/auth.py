@@ -105,7 +105,8 @@ async def register_user(user_data: UserCreate, db: AsyncSession = Depends(get_db
             username=user_data.username,
             full_name=user_data.full_name,
             hashed_password=hash_password(user_data.password),
-            role=user_data.role,
+            # Roles are never chosen by the person signing up.
+            role="student",
             is_active=True,
             is_verified=False,
             preferences={},

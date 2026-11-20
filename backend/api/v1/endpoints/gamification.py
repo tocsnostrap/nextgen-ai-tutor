@@ -119,6 +119,9 @@ async def _get_or_create_profile(db: AsyncSession, user_id: str) -> Gamification
     return profile
 
 
+MAX_XP_PER_AWARD = 100
+
+
 class AwardXPRequest(BaseModel):
     amount: int
     reason: str = "general"
@@ -165,6 +168,9 @@ async def get_profile(user_id: str = Depends(get_current_user_id), db: AsyncSess
 async def award_xp(request: AwardXPRequest, user_id: str = Depends(get_current_user_id), db: AsyncSession = Depends(get_db)):
     profile = await _get_or_create_profile(db, user_id)
     old_level = _level_from_xp(profile.xp)
+    # The page reports its own XP; cap each award so it cannot be inflated.
+    # Awards move server-side with the tutor (PLAN.md phase 3).
+    request.amount = max(0, min(request.amount, MAX_XP_PER_AWARD))
     profile.xp += request.amount
     new_level = _level_from_xp(profile.xp)
     profile.last_active = datetime.now(timezone.utc)

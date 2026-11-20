@@ -16,7 +16,7 @@ from ....schedule_engine import (
     get_week_schedules,
     generate_progress_report,
 )
-from ....ai_service import generate_lesson_content
+from ....claude_ai_service import generate_lesson_content
 from ....unified_adaptive_engine import get_or_create_profile
 from sqlalchemy import select, and_
 

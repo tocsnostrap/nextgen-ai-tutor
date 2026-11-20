@@ -483,9 +483,10 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def init_db():
     engine = _get_engine()
     try:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database initialized successfully")
+        # Tables are created by migrations (`alembic upgrade head`), not here.
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        logger.info("Database connection OK")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
         raise

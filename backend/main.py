@@ -7,14 +7,13 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-os.makedirs("logs", exist_ok=True)
+from .core.config import settings
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,8 +23,6 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
-
-security = HTTPBearer()
 
 
 @asynccontextmanager
@@ -99,21 +96,21 @@ app = FastAPI(
     title="NextGen AI Tutor API",
     description="Enterprise-grade AI tutoring platform backend",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    # API docs are for development only.
+    docs_url="/docs" if settings.DEBUG else None,
+    redoc_url="/redoc" if settings.DEBUG else None,
+    openapi_url="/openapi.json" if settings.DEBUG else None,
     lifespan=lifespan
 )
 
-from .core.config import settings
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+if settings.CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
@@ -131,8 +128,10 @@ app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
 @app.get("/frontend/{file_path:path}")
 async def serve_frontend_file(file_path: str):
-    full_path = os.path.join(frontend_dir, file_path)
-    if os.path.exists(full_path) and os.path.isfile(full_path):
+    root = os.path.realpath(frontend_dir)
+    full_path = os.path.realpath(os.path.join(root, file_path))
+    # Never serve anything outside the frontend folder.
+    if os.path.commonpath([root, full_path]) == root and os.path.isfile(full_path):
         media_type = "application/javascript" if file_path.endswith(".js") else None
         return FileResponse(full_path, media_type=media_type)
     raise HTTPException(status_code=404, detail="File not found")
@@ -161,10 +160,7 @@ async def root():
     index_path = os.path.join(frontend_dir, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path, media_type="text/html")
-    demo_path = os.path.join(frontend_dir, "demo.html")
-    if os.path.exists(demo_path):
-        return FileResponse(demo_path, media_type="text/html")
-    return {"message": "Welcome to NextGen AI Tutor API", "version": "1.0.0", "docs": "/docs"}
+    return {"message": "Welcome to NextGen AI Tutor API", "version": "1.0.0"}
 
 
 @app.get("/parent")
@@ -173,24 +169,6 @@ async def parent_dashboard():
     if os.path.exists(parent_path):
         return FileResponse(parent_path, media_type="text/html")
     return {"error": "Parent dashboard not found"}
-
-
-@app.get("/demo")
-async def demo():
-    demo_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "demo.html")
-    if os.path.exists(demo_path):
-        return FileResponse(demo_path, media_type="text/html")
-    return {"error": "Demo not found"}
-
-
-async def verify_token(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-) -> Dict[str, Any]:
-    return {
-        "user_id": "user_123",
-        "email": "student@example.com",
-        "role": "student"
-    }
 
 
 @app.exception_handler(HTTPException)

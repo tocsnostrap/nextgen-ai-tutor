@@ -1,7 +1,7 @@
 """
 Claude AI Service - Advanced tutoring using Anthropic Claude API
 
-Replaces OpenAI-based ai_service.py with Claude claude-opus-4-6.
+The model is set by TUTOR_MODEL in core/config.py.
 
 Key innovations over current state of art:
 - Adaptive thinking for complex problems (math proofs, science explanations)
@@ -19,6 +19,8 @@ import logging
 from typing import Dict, Any, Optional, List, AsyncIterator
 
 import anthropic
+
+from .core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -193,7 +195,7 @@ async def generate_tutor_response(
     conversation_history: Optional[List[Dict[str, str]]] = None,
 ) -> Optional[Dict[str, Any]]:
     """
-    Generate a tutoring response using Claude claude-opus-4-6.
+    Generate a tutoring response using Claude.
 
     Uses adaptive thinking for complex problems, streaming for reliability,
     and prompt caching for student profiles.
@@ -215,7 +217,7 @@ async def generate_tutor_response(
         needs_deep_thinking = _requires_deep_thinking(message, context)
 
         stream_kwargs: Dict[str, Any] = {
-            "model": "claude-opus-4-6",
+            "model": settings.TUTOR_MODEL,
             "max_tokens": 2048,
             "system": [
                 {
@@ -248,7 +250,7 @@ async def generate_tutor_response(
             "difficulty_adjustment": _assess_difficulty(message, context),
             "session_id": context.get("session_id", "default"),
             "ai_powered": True,
-            "model": "claude-opus-4-6",
+            "model": settings.TUTOR_MODEL,
             "used_thinking": needs_deep_thinking,
         }
 
@@ -291,7 +293,7 @@ async def stream_tutor_response(
     needs_deep_thinking = _requires_deep_thinking(message, context)
 
     stream_kwargs: Dict[str, Any] = {
-        "model": "claude-opus-4-6",
+        "model": settings.TUTOR_MODEL,
         "max_tokens": 2048,
         "system": [
             {
@@ -348,7 +350,7 @@ Requirements:
 - Questions should build conceptually on each other"""
 
         response = await client.messages.create(
-            model="claude-opus-4-6",
+            model=settings.TUTOR_MODEL,
             max_tokens=2000,
             output_config={
                 "format": {
@@ -406,7 +408,7 @@ Requirements:
 
         quiz_data = json.loads(response.content[0].text)
         quiz_data.update(
-            {"ai_generated": True, "model": "claude-opus-4-6", "difficulty": difficulty}
+            {"ai_generated": True, "model": settings.TUTOR_MODEL, "difficulty": difficulty}
         )
         return quiz_data
 
@@ -446,7 +448,7 @@ Analyze:
 5. CONFIRMATION QUESTION to verify the fix worked"""
 
         response = await client.messages.create(
-            model="claude-opus-4-6",
+            model=settings.TUTOR_MODEL,
             max_tokens=1500,
             thinking={"type": "adaptive"},
             output_config={
@@ -490,7 +492,7 @@ Analyze:
             raise ValueError("No text block in response")
 
         analysis = json.loads(text_block.text)
-        analysis["analyzed_by"] = "claude-opus-4-6"
+        analysis["analyzed_by"] = settings.TUTOR_MODEL
         return analysis
 
     except Exception as e:
@@ -554,7 +556,7 @@ Design a problem that:
 5. Connects to a real-world application"""
 
         response = await client.messages.create(
-            model="claude-opus-4-6",
+            model=settings.TUTOR_MODEL,
             max_tokens=1000,
             output_config={
                 "format": {
@@ -593,7 +595,7 @@ Design a problem that:
                 "difficulty_level": diff_desc,
                 "problem_type": problem_type,
                 "ai_generated": True,
-                "model": "claude-opus-4-6",
+                "model": settings.TUTOR_MODEL,
             }
         )
         return problem
@@ -655,7 +657,7 @@ Identify:
 Provide: A supportive coaching response (NOT preachy) + one powerful metacognitive question."""
 
         response = await client.messages.create(
-            model="claude-opus-4-6",
+            model=settings.TUTOR_MODEL,
             max_tokens=800,
             output_config={
                 "format": {
@@ -740,7 +742,7 @@ Generate:
 6. Optimal daily practice duration recommendation"""
 
         response = await client.messages.create(
-            model="claude-opus-4-6",
+            model=settings.TUTOR_MODEL,
             max_tokens=2000,
             thinking={"type": "adaptive"},
             output_config={
@@ -821,7 +823,7 @@ Generate:
             (b for b in reversed(response.content) if b.type == "text"), None
         )
         trajectory = json.loads(text_block.text)
-        trajectory["generated_by"] = "claude-opus-4-6"
+        trajectory["generated_by"] = settings.TUTOR_MODEL
         trajectory["student_id"] = student_id
         return trajectory
 
@@ -871,7 +873,7 @@ Return JSON:
 }}"""
 
         response = await client.messages.create(
-            model="claude-opus-4-6",
+            model=settings.TUTOR_MODEL,
             max_tokens=800,
             messages=[{"role": "user", "content": prompt}],
         )
@@ -1012,9 +1014,165 @@ def _calculate_recent_accuracy(session_history: List[Dict[str, Any]]) -> float:
     return correct / len(recent)
 
 
+async def generate_lesson_content(
+    title: str,
+    description: str,
+    subject: str,
+    objectives: list,
+    age: int = 8,
+    activity_type: str = "lesson",
+) -> Dict[str, Any]:
+    try:
+        client = _get_async_client()
+
+        if age <= 5:
+            level = "preschool/kindergarten"
+            style = "Very simple language, lots of fun examples, emojis, and encouragement. Short paragraphs (2-3 sentences each)."
+        elif age <= 8:
+            level = "grades 1-3"
+            style = "Clear friendly language, relatable real-world examples, step-by-step explanations. Medium paragraphs."
+        else:
+            level = "grades 4-6"
+            style = "Grade-appropriate vocabulary, deeper reasoning, connections between concepts. Can handle longer explanations."
+
+        obj_text = "\n".join(f"- {o}" for o in (objectives or []))
+
+        prompt = f"""Create a structured lesson for a {age}-year-old ({level}) about:
+
+Topic: {title}
+Description: {description}
+Subject: {subject}
+Activity Type: {activity_type}
+
+Learning Objectives:
+{obj_text if obj_text else '- Learn about ' + title}
+
+Return a JSON object with this exact structure:
+{{
+  "intro": "A brief, engaging 2-3 sentence introduction that hooks the student",
+  "sections": [
+    {{
+      "heading": "Section title",
+      "content": "2-4 paragraphs of lesson content with **bold** key terms",
+      "example": "A concrete example or demonstration (optional, can be null)",
+      "tip": "A helpful tip or fun fact (optional, can be null)"
+    }}
+  ],
+  "key_vocabulary": [
+    {{"term": "word", "definition": "simple definition"}}
+  ],
+  "check_understanding": [
+    {{
+      "question": "A question to check understanding",
+      "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
+      "correct": 0,
+      "explanation": "Why this is correct"
+    }}
+  ],
+  "summary": "2-3 sentence summary of what was learned",
+  "challenge": "An optional fun challenge or activity to extend learning"
+}}
+
+Style: {style}
+Create 2-4 sections. Make 2-3 check questions. Keep vocabulary to 3-5 terms.
+Only return valid JSON."""
+
+        async with client.messages.stream(
+            model=settings.TUTOR_MODEL,
+            max_tokens=4000,
+            system="You are an expert curriculum designer creating engaging, age-appropriate lesson content. Return only valid JSON.",
+            messages=[{"role": "user", "content": prompt}],
+        ) as stream:
+            final_message = await stream.get_final_message()
+
+        content = next((b.text for b in final_message.content if b.type == "text"), "").strip()
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1] if "\n" in content else content[3:]
+            if content.endswith("```"):
+                content = content[:-3]
+            content = content.strip()
+        lesson = json.loads(content)
+        lesson["ai_generated"] = True
+        lesson["title"] = title
+        lesson["subject"] = subject
+        return lesson
+    except Exception as e:
+        logger.error("Lesson generation failed: %s", e)
+        return _fallback_lesson(title, description, subject, objectives, age)
+
+
+def _fallback_lesson(title, description, subject, objectives, age):
+    if age <= 5:
+        intro = f"Hi there! Today we're going to learn about **{title}**! This is going to be so much fun!"
+        summary = f"You did it! You learned all about **{title}**. Give yourself a big high five!"
+        challenge = "Can you draw a picture about what you learned today?"
+        tip = "Remember, learning is like playing - the more you explore, the more you discover!"
+    elif age <= 8:
+        intro = f"Welcome to today's lesson on **{title}**! {description or ''} Get ready to explore and discover something awesome!"
+        summary = f"Awesome work! You've been learning about **{title}**. Keep practicing and you'll master it in no time!"
+        challenge = "Try teaching what you learned to a friend or family member. When you can explain it, you really understand it!"
+        tip = "If something feels tricky, that's your brain growing! Take a break and try again."
+    else:
+        intro = f"Today's focus: **{title}**. {description or ''} Let's build a deeper understanding of this important topic."
+        summary = f"Well done on completing this lesson about **{title}**. Review the key concepts and think about how they connect to what you already know."
+        challenge = "Write a brief summary in your own words, or try to come up with your own example problem."
+        tip = "Strong learners look for connections between new ideas and things they already know."
+
+    sections = [
+        {
+            "heading": f"Introduction to {title}",
+            "content": description or f"In this lesson, we will explore {title} in depth.",
+            "example": None,
+            "tip": tip,
+        }
+    ]
+    if objectives and len(objectives) > 0:
+        obj_content = "By the end of this lesson, you should be able to:\n" + "\n".join(f"- {o}" for o in objectives)
+        sections.append({
+            "heading": "Learning Goals",
+            "content": obj_content,
+            "example": None,
+            "tip": None,
+        })
+        sections.append({
+            "heading": "Let's Get Started",
+            "content": f"Let's begin with the first goal: **{objectives[0]}**. Work through the material carefully, and don't hesitate to ask Nova for help if you need it!",
+            "example": None,
+            "tip": None,
+        })
+
+    check = []
+    if objectives:
+        check.append({
+            "question": f"Which of these is a learning goal for this lesson?",
+            "options": [f"A) {objectives[0]}", "B) Learn to fly", "C) Build a rocket", "D) Cook dinner"],
+            "correct": 0,
+            "explanation": f"That's right! One of our main goals is: {objectives[0]}",
+        })
+    check.append({
+        "question": f"What is the main topic of this lesson?",
+        "options": [f"A) {title}", "B) Something else entirely", "C) We haven't started yet", "D) I'm not sure"],
+        "correct": 0,
+        "explanation": f"Correct! This lesson is all about {title}.",
+    })
+
+    return {
+        "title": title,
+        "subject": subject,
+        "ai_generated": False,
+        "intro": intro,
+        "sections": sections,
+        "key_vocabulary": [],
+        "check_understanding": check,
+        "summary": summary,
+        "challenge": challenge,
+    }
+
+
 __all__ = [
     "generate_tutor_response",
     "stream_tutor_response",
+    "generate_lesson_content",
     "generate_quiz_claude",
     "analyze_student_error",
     "generate_personalized_problem",

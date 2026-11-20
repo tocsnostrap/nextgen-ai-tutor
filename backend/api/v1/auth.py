@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 ALGORITHM = "HS256"
 
+DEMO_TOKEN = "access_token_user_123"
+DEMO_USER_ID = "user_123"
+
 
 def create_access_token(user_id: str, email: str, role: str) -> str:
     now = datetime.now(timezone.utc)
@@ -36,16 +39,11 @@ def create_refresh_token(user_id: str) -> str:
 
 
 def verify_token(token: str) -> Optional[Dict[str, Any]]:
-    if token.startswith("access_token_"):
-        user_id = token.replace("access_token_", "")
-        logger.warning(
-            "Legacy token format 'access_token_' used for user '%s'. "
-            "Please migrate to real JWT tokens.",
-            user_id,
-        )
+    # The page's built-in demo child. Only this one token, and only in demo mode.
+    if settings.DEMO_MODE and token == DEMO_TOKEN:
         return {
-            "user_id": user_id,
-            "email": f"{user_id}@example.com",
+            "user_id": DEMO_USER_ID,
+            "email": "demo@example.com",
             "role": "student",
         }
 

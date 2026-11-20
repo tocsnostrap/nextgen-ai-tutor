@@ -37,16 +37,11 @@ async def websocket_endpoint(
     token: str = Query(default="demo"),
     session_token: Optional[str] = Query(None)
 ):
-    user_id = "demo_user"
-    if token and token != "demo":
-        token_data = verify_token(token)
-        if token_data:
-            user_id = token_data["user_id"]
-            logger.info(f"WebSocket authenticated: user_id={user_id}")
-        else:
-            logger.warning(f"WebSocket: invalid token provided, using demo_user")
-    else:
-        logger.info("WebSocket: no token provided, using demo_user")
+    token_data = verify_token(token) if token else None
+    if not token_data:
+        await websocket.close(code=1008)
+        return
+    user_id = token_data["user_id"]
 
     await websocket_manager.handle_connection(
         websocket=websocket,

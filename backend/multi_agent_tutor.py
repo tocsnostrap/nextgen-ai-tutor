@@ -30,6 +30,7 @@ from enum import Enum
 import anthropic
 
 from .claude_ai_service import _get_async_client, _build_nova_system_prompt
+from .core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -191,8 +192,8 @@ Has recent specific error to analyze: {has_recent_error}
 Message length: {len(message)} chars"""
 
         response = await client.messages.create(
-            model="claude-haiku-4-5",  # Fast model for routing
-            max_tokens=300,
+            model=settings.FAST_MODEL,  # Fast model for routing
+            max_tokens=1024,
             system=ORCHESTRATOR_SYSTEM,
             messages=[
                 {
@@ -307,7 +308,7 @@ async def call_domain_expert(
     messages.append({"role": "user", "content": message})
 
     stream_kwargs: Dict[str, Any] = {
-        "model": "claude-opus-4-6",
+        "model": settings.TUTOR_MODEL,
         "max_tokens": 2048,
         "system": [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
         "messages": messages,
@@ -347,7 +348,7 @@ async def call_socratic_guide(
     messages.append({"role": "user", "content": message})
 
     async with client.messages.stream(
-        model="claude-opus-4-6",
+        model=settings.TUTOR_MODEL,
         max_tokens=1024,
         system=system,
         messages=messages,
@@ -388,7 +389,7 @@ async def call_metacog_coach(
     messages.append({"role": "user", "content": context_note})
 
     async with client.messages.stream(
-        model="claude-opus-4-6",
+        model=settings.TUTOR_MODEL,
         max_tokens=1024,
         system=METACOG_COACH_SYSTEM,
         messages=messages,
@@ -424,7 +425,7 @@ async def call_error_analyst(
     )
 
     async with client.messages.stream(
-        model="claude-opus-4-6",
+        model=settings.TUTOR_MODEL,
         max_tokens=1024,
         thinking={"type": "adaptive"},
         system=ERROR_ANALYST_SYSTEM,
@@ -503,7 +504,7 @@ async def multi_agent_respond(
         error_analysis={"agent": "error_analyst"} if decision.primary_agent == AgentRole.ERROR_ANALYST else None,
         session_id=context.get("session_id", "default"),
         ai_powered=True,
-        model="claude-opus-4-6",
+        model=settings.TUTOR_MODEL,
         used_thinking=used_thinking,
     )
 

@@ -213,22 +213,6 @@ async def predict_bkt(bkt_request: BKTRequest, user_id: str = Depends(get_curren
         raise HTTPException(status_code=500, detail="BKT prediction failed")
 
 
-@router.post("/emotion/detect", response_model=EmotionResponse)
-async def detect_emotion(emotion_request: EmotionRequest, user_id: str = Depends(get_current_user_id)):
-    try:
-        result = mock_emotion_detect(text=emotion_request.text)
-        return EmotionResponse(
-            emotion=result["emotion"],
-            confidence=result["confidence"],
-            emotions_distribution=result["emotions_distribution"],
-            source=emotion_request.source,
-            metadata={"model": "mock-v1", "source": emotion_request.source}
-        )
-    except Exception as e:
-        logger.error(f"Emotion detection failed: {e}")
-        raise HTTPException(status_code=500, detail="Emotion detection failed")
-
-
 @router.post("/adapt", response_model=AdaptationResponse)
 async def get_adaptation(adapt_request: AdaptationRequest, user_id: str = Depends(get_current_user_id)):
     difficulty_levels = ["beginner", "intermediate", "advanced", "expert"]
