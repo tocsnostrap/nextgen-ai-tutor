@@ -36,12 +36,13 @@ Assumptions I made that you can change:
 
 One AI tutor per child that does what a human tutor does across weeks, not one chat:
 
-1. Finds out what the child knows (placement).
-2. Plans a term, a week and each session, around the child's interests.
-3. Teaches the session live, checks understanding, adapts on the spot.
-4. Sets and marks homework.
-5. Remembers everything and uses it next time.
-6. Reports to the parent.
+1. Gets to know the child first: likes, dislikes and voice (section 19).
+2. Finds out what the child knows (placement).
+3. Plans a term, a week and each session, around the child's interests.
+4. Teaches the session live, checks understanding, adapts on the spot.
+5. Sets and marks homework.
+6. Remembers everything and uses it next time.
+7. Reports to the parent.
 
 The games and RPG world in the current code stay as a reward area. They stop being the main screen.
 
@@ -171,7 +172,8 @@ Review gaps expand after each success: 1, 3, 7, 21, 60 days. A failure resets th
 
 | Level | Made when | Contents |
 |-------|-----------|----------|
-| Placement | First 2–3 sessions | Adaptive questions that walk the prerequisite graph to find the edge of what the child knows |
+| First meeting | Before anything else | Nova gets to know the child and their voice (section 19). No teaching, no testing |
+| Placement | The next 2–3 sessions | Adaptive questions that walk the prerequisite graph to find the edge of what the child knows, wrapped in the interests learned at the first meeting |
 | Half-term plan (6 weeks) | After placement, then every half term | Target objectives per subject, the child's chosen project, parent goals |
 | Week plan | Each weekend | Which objective each session covers, review slots; the child picks the order |
 | Session plan | Night before | Objective, success criteria, recall questions, explanation in the child's chosen context, worked examples, practice items with answers, exit questions, homework |
@@ -343,8 +345,8 @@ Each phase ends with a check that must pass before the next starts.
 | 0. Base | Make the feature branch the base; delete dead code; close the security holes in `CODEBASE.md` section 4; remove invented numbers from the screen; deploy to a new Railway project with Postgres; add tests, CI and migrations; verify research citations and the curriculum licence | App deploys to Railway from a clean checkout; tests run in CI; each security probe in the audit now fails |
 | 1. Accounts | Parent and child accounts, real login, all state in Postgres | Two children on one parent account have separate records that survive a restart |
 | 2. Curriculum | Import maths and English for Years 1–7 as a graph; item bank with computed answers; placement | A new child finishes placement and gets a mastery map |
-| 3. Tutor | Learner record, tutor tools, the section 8 session flow in text, child-led choices, safety screening, test set | A scripted session runs end to end and the record updates correctly; tests pass |
-| 4. Voice | Hold-to-talk, spoken replies, shared whiteboard, in English | A full session with no typing |
+| 3. Tutor | Learner record, tutor tools, the first meeting and the section 8 session flow in text, child-led choices, safety screening, test set | A scripted session runs end to end and the record updates correctly; tests pass |
+| 4. Voice | Hold-to-talk, spoken replies, shared whiteboard, in English; Nova's new look; the spoken first meeting with the voice check | A first meeting and a full session with no typing |
 | 5. Planning | Half-term, week and session plans; tutor-mode timetable; extra sessions; re-planning rules | A simulated 6-week child gets sensible plans that react to pass and fail |
 | 6. Homework | Assign, submit (typed and photo), mark, feed back | Homework from one session is reviewed in the next |
 | 7. Parent | Reports, transcripts, goals, mode and language choices, alerts, export and delete | Parent sees an accurate weekly report |
@@ -456,7 +458,7 @@ Rules she always follows:
 
 ### 16.3 How she looks
 
-The current mascot is a small robot with five expressions. A robot does not match a human woman's voice. The default is to replace it with a friendly illustrated woman with the same five expressions; the robot can stay in the game world. Say so if you would rather keep the robot.
+Decided: Nova is a friendly illustrated woman, replacing the robot mascot. She has the same five expressions the robot had (happy, thinking, explaining, encouraging, celebrating) so the existing screens need new pictures, not new logic. The design is chosen from a few options you and the children look at, and it should not present her as any one ethnicity's default teacher; that choice is yours.
 
 ---
 
@@ -560,3 +562,44 @@ Ordered by how likely and how damaging I judge each to be. Each has the sign we 
 | 14 | **A model or vendor changes** and behaviour shifts | Test-set scores drop after an update | Model versions pinned in config; the test set runs before any switch |
 
 One limit to state plainly: I can prove the software works. I cannot prove in advance that children learn more with it. Only the real-use phase shows that, which is why it measures delayed checks and half-termly papers and not just time spent.
+
+---
+
+## 19. The first meeting
+
+Before any teaching or testing, Nova spends one relaxed session getting to know the child. It replaces the five-screen sign-up form in the current code. A good human tutor does the same, and everything learned here is used from the next session on.
+
+### 19.1 What happens (10–15 minutes)
+
+| Step | What Nova does | What it is for |
+|------|----------------|----------------|
+| 1. Hello | Introduces herself, says she is an AI tutor, asks what the child likes to be called and how to say it | Getting the name right, every time |
+| 2. Learning to talk together | Shows the talk button. "Tell me your name and how old you are." Then a few easy things to say aloud: count to ten, the days of the week, a short sentence to read | Checks the microphone, and measures how well the child's voice is understood |
+| 3. Likes | "What do you love doing?" Sports, games, animals, shows, food, music, who is in the family, pets | Contexts for lessons; names she should recognise |
+| 4. Dislikes and worries | "Is there anything at school you don't like, or that feels hard?" "What makes a lesson boring?" | What to go gently with; what to avoid |
+| 5. How they like to learn | "Do you like drawing things out, or talking them through?" "Do you like a challenge or to take it steady?" | Starting pace and style. These are preferences to respect, not fixed "learning styles" |
+| 6. Languages | "Which languages do you speak at home?" | Starting point for Arabic, French or Spanish |
+| 7. Child's choice | The child picks a colour theme and one thing they want to learn about this term | Ownership from day one; first item on the wonder list |
+| 8. Goodbye | Nova says back three things she learned and what happens next time | Shows she listened |
+
+It is a conversation, not a questionnaire. Nova follows up on answers, shares enthusiasm, and lets the child skip anything. Younger children get fewer, simpler questions with picture choices to tap.
+
+### 19.2 Learning the child's voice
+
+What "learning their voice" means here, and what it does not:
+
+- **It does:** measure how accurately this child is understood, so the session knows when to rely on speech and when to offer taps. It stores the words she must recognise for this child (their name, siblings, pets, favourite team) and passes them to the speech service as hints. It notes speaking pace and accent so Nova waits long enough before replying. It rechecks every half term, because children's voices and confidence change.
+- **It does not:** make a voiceprint to identify the child. Identifying a person by voice is biometric data under UK law and is not needed; the child is already logged in under the parent's account.
+- **Recordings:** the audio is turned into text and then deleted. Keeping recordings, for example so you can hear reading progress over a year, is a parent setting that is off by default.
+
+If the child is poorly understood in the voice check, Nova says nothing negative. The session quietly leans on tap and typed answers, and the parent is told, with a suggestion to try a headset.
+
+### 19.3 The parent's part
+
+A separate five-minute form or spoken chat for the parent, before the child's meeting: school year, anything the school has said, goals, any diagnosed needs such as dyslexia, topics to avoid, tutor or school mode, languages, and available days.
+
+### 19.4 Keeping it current
+
+- Likes and dislikes are not asked once and frozen. Nova notices new interests in conversation and adds them; she checks in properly at the start of each half term.
+- The child and the parent can see and edit what Nova has noted about them.
+- Dislikes are handled with care: a child who says "I hate maths" still does maths, in shorter steps, in their favourite context, with early wins. The dislike is tracked, and whether it softens is one of the things the parent report shows.
