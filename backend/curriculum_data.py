@@ -537,9 +537,9 @@ _s("social_studies", 2, "History", 3, "past_present", "Past and Present",
    "Compare life in the past to life today and understand how things change over time.",
    ["Compare past and present tools and technology", "Identify how daily life has changed", "Understand timelines"], 2.5)
 
-_s("social_studies", 3, "History", 1, "community_history", "Our Community's History",
-   "Learn about the history of communities including early peoples, cultural traditions, and key events.",
-   ["Describe early inhabitants of different communities", "Explain key events in community history", "Identify important historical figures from around the world"], 4.0,
+_s("social_studies", 3, "History", 1, "state_history", "Our State's History",
+   "Learn about the history of your state including Native peoples, settlers, and key events.",
+   ["Describe early inhabitants", "Explain key events in state history", "Identify important historical figures"], 4.0,
    prereqs=["social_studies_g2_past_present"])
 
 _s("social_studies", 3, "Geography", 2, "regions", "Geographic Regions",
@@ -551,45 +551,45 @@ _s("social_studies", 3, "Civics", 3, "rights_responsibilities", "Rights and Resp
    "Understand the rights and responsibilities of citizens in a democracy.",
    ["Identify basic rights (speech, voting, education)", "Describe citizen responsibilities", "Explain the importance of civic participation"], 2.5)
 
-_s("social_studies", 4, "Geography", 1, "world_regions", "Regions of the World",
-   "Study the major regions of the world and their characteristics.",
-   ["Name and locate the major world regions", "Describe each region's geography and climate", "Compare resources and industries across regions"], 5.0,
+_s("social_studies", 4, "Geography", 1, "us_regions", "Regions of the United States",
+   "Study the five regions of the United States and their characteristics.",
+   ["Name and locate the five US regions", "Describe each region's geography and climate", "Compare resources and industries across regions"], 5.0,
    prereqs=["social_studies_g3_regions"])
 
-_s("social_studies", 4, "History", 2, "early_civilizations", "Early Civilizations",
-   "Learn about ancient cultures, exploration, and the development of early societies.",
-   ["Describe ancient cultures and their contributions", "Explain how early trade routes connected civilizations", "Understand how geography shaped early societies"], 5.0,
-   prereqs=["social_studies_g3_community_history"])
+_s("social_studies", 4, "History", 2, "early_america", "Early American History",
+   "Learn about Native Americans, exploration, and the founding of the colonies.",
+   ["Describe Native American cultures", "Explain European exploration and its impact", "Understand the founding of the 13 colonies"], 5.0,
+   prereqs=["social_studies_g3_state_history"])
 
 _s("social_studies", 4, "Economics", 3, "economics_basic", "Basic Economics",
    "Understand supply and demand, producers and consumers, and economic choices.",
    ["Explain supply and demand", "Describe producers and consumers", "Understand opportunity cost"], 3.0,
    prereqs=["social_studies_g1_needs_wants"])
 
-_s("social_studies", 5, "History", 1, "world_history", "World History",
-   "Study major events and movements that shaped the modern world.",
-   ["Describe major revolutions and independence movements worldwide", "Explain the development of democratic systems of government", "Analyze causes and effects of major historical conflicts"], 8.0,
-   prereqs=["social_studies_g4_early_civilizations"])
+_s("social_studies", 5, "History", 1, "us_history", "United States History",
+   "Study major events in US history from the Revolution through the Civil War.",
+   ["Describe causes and effects of the American Revolution", "Explain the Constitution and Bill of Rights", "Analyze the causes of the Civil War"], 8.0,
+   prereqs=["social_studies_g4_early_america"])
 
-_s("social_studies", 5, "Government", 2, "government_systems", "Government Systems",
-   "Understand different systems of government and how they work.",
-   ["Describe different forms of government (democracy, monarchy, republic)", "Explain how laws are made and enforced", "Understand the role of citizens in governance"], 4.0,
+_s("social_studies", 5, "Government", 2, "us_government", "US Government",
+   "Understand the three branches of government and how they work together.",
+   ["Describe the legislative, executive, and judicial branches", "Explain checks and balances", "Understand the election process"], 4.0,
    prereqs=["social_studies_g2_local_gov"])
 
-_s("social_studies", 5, "Geography", 3, "world_continents", "World Continents and Cultures",
-   "Explore the geography, cultures, and economies of all continents.",
-   ["Locate major countries and features on each continent", "Describe diverse cultures and languages around the world", "Analyze how geography affects development"], 4.0,
-   prereqs=["social_studies_g4_world_regions"])
+_s("social_studies", 5, "Geography", 3, "western_hemisphere", "Western Hemisphere Geography",
+   "Explore the geography, cultures, and economies of North and South America.",
+   ["Locate countries in the Western Hemisphere", "Describe diverse cultures and languages", "Analyze how geography affects development"], 4.0,
+   prereqs=["social_studies_g4_us_regions"])
 
 _s("social_studies", 6, "History", 1, "world_cultures", "World Cultures and Civilizations",
    "Study ancient civilizations and their contributions to the modern world.",
    ["Describe major ancient civilizations (Mesopotamia, Egypt, Greece, Rome)", "Explain contributions to law, government, and culture", "Compare and contrast ancient societies"], 7.0,
-   prereqs=["social_studies_g5_world_history"])
+   prereqs=["social_studies_g5_us_history"])
 
 _s("social_studies", 6, "Geography", 2, "world_geography", "World Geography",
    "Study the Eastern Hemisphere including physical features, climate, and human geography.",
    ["Locate major countries and features on a world map", "Describe climate zones and biomes", "Analyze population distribution and urbanization"], 5.0,
-   prereqs=["social_studies_g5_world_continents"])
+   prereqs=["social_studies_g5_western_hemisphere"])
 
 _s("social_studies", 6, "Civics", 3, "global_citizenship", "Global Citizenship",
    "Explore global issues, human rights, and the responsibilities of global citizens.",

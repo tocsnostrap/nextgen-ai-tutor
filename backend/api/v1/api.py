@@ -6,7 +6,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, Query
 from typing import List, Optional, Dict, Any
 
-from .endpoints import auth, users, sessions, analytics, ai_models, curriculum, gamification, chat, learning_paths, parent, videos, games, adaptive, schedule
+from .endpoints import auth, users, sessions, analytics, ai_models, curriculum, gamification, chat, learning_paths, parent, videos, games, adaptive, schedule, knowledge_library
 from .auth import verify_token
 from ...websocket.manager import websocket_manager
 
@@ -28,6 +28,7 @@ api_router.include_router(learning_paths.router, prefix="/learning-paths", tags=
 api_router.include_router(games.router, prefix="/games", tags=["Games"])
 api_router.include_router(adaptive.router, prefix="/adapt", tags=["Adaptive Engine"])
 api_router.include_router(schedule.router, prefix="/schedule", tags=["Schedule & Curriculum"])
+api_router.include_router(knowledge_library.router, prefix="/knowledge-library", tags=["Knowledge Library"])
 
 
 @api_router.websocket("/ws")

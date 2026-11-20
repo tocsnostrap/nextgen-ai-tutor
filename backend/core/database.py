@@ -442,6 +442,31 @@ class ProgressReport(Base, TimeStampedMixin):
     )
 
 
+class ChildInterestProfile(Base):
+    """Tracks what each child is passionate about — built automatically from enthusiasm signals."""
+    __tablename__ = "child_interest_profiles"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+    user_id = Column(String(255), unique=True, nullable=False, index=True)
+
+    # Detected passion topics: [{topic, emoji, score, subject_area, first_seen, last_seen, count}]
+    passion_topics = Column(JSON, default=list)
+
+    # Child-added custom interests: [{topic, emoji, added_at}]
+    custom_interests = Column(JSON, default=list)
+
+    # Things the child has discovered/learned: [{concept, subject, emoji, short_desc, discovered_at}]
+    discoveries = Column(JSON, default=list)
+
+    # Nova's memory notes about this child: ["loves dinosaurs", "gets excited about space"]
+    nova_memory = Column(JSON, default=list)
+
+    # Recent enthusiasm signals (rolling 100): [{topic, signal, message_snippet, detected_at}]
+    enthusiasm_log = Column(JSON, default=list)
+
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     session_factory = _get_session_local()
     async with session_factory() as session:
@@ -488,6 +513,7 @@ __all__ = [
     "DailySchedule",
     "SubjectTimeLog",
     "ProgressReport",
+    "ChildInterestProfile",
     "_get_engine",
     "_get_session_local",
 ]

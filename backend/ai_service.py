@@ -7,7 +7,6 @@ from openai import OpenAI
 logger = logging.getLogger(__name__)
 
 _client = None
-_lesson_client = None
 
 def _get_client() -> OpenAI:
     global _client
@@ -15,21 +14,10 @@ def _get_client() -> OpenAI:
         base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
         api_key = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
         if base_url and api_key:
-            _client = OpenAI(base_url=base_url, api_key=api_key, timeout=30.0, max_retries=1)
+            _client = OpenAI(base_url=base_url, api_key=api_key)
         else:
-            _client = OpenAI(timeout=30.0, max_retries=1)
+            _client = OpenAI()
     return _client
-
-def _get_lesson_client() -> OpenAI:
-    global _lesson_client
-    if _lesson_client is None:
-        base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
-        api_key = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY")
-        if base_url and api_key:
-            _lesson_client = OpenAI(base_url=base_url, api_key=api_key, timeout=5.0, max_retries=0)
-        else:
-            _lesson_client = OpenAI(timeout=5.0, max_retries=0)
-    return _lesson_client
 
 
 def _build_system_prompt(context: Dict[str, Any]) -> str:
@@ -279,9 +267,8 @@ async def generate_lesson_content(
     age: int = 8,
     activity_type: str = "lesson",
 ) -> Dict[str, Any]:
-    import asyncio
     try:
-        client = _get_lesson_client()
+        client = _get_client()
 
         if age <= 5:
             level = "preschool/kindergarten"
@@ -335,8 +322,7 @@ Style: {style}
 Create 2-4 sections. Make 2-3 check questions. Keep vocabulary to 3-5 terms.
 Only return valid JSON."""
 
-        response = await asyncio.to_thread(
-            client.chat.completions.create,
+        response = client.chat.completions.create(
             model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": "You are an expert curriculum designer creating engaging, age-appropriate lesson content. Return only valid JSON."},
@@ -346,11 +332,7 @@ Only return valid JSON."""
         )
 
         import json
-        raw = response.choices[0].message.content
-        if not raw or not raw.strip():
-            logger.warning("AI returned empty content for lesson '%s', using fallback", title)
-            return _fallback_lesson(title, description, subject, objectives, age)
-        content = raw.strip()
+        content = response.choices[0].message.content.strip()
         if content.startswith("```"):
             content = content.split("\n", 1)[1] if "\n" in content else content[3:]
             if content.endswith("```"):

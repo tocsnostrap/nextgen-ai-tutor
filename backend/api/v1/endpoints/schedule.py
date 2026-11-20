@@ -210,24 +210,14 @@ async def get_lesson_content(
         profile = await get_or_create_profile(db, user_id)
         age = profile.age or 8
 
-        import asyncio
-        try:
-            lesson = await asyncio.wait_for(
-                generate_lesson_content(
-                    title=title,
-                    description=description,
-                    subject=subject,
-                    objectives=objectives,
-                    age=age,
-                    activity_type=activity_type,
-                ),
-                timeout=6.0,
-            )
-        except asyncio.TimeoutError:
-            logger.warning("Lesson generation timed out for '%s', using fallback", title)
-            from ....ai_service import _fallback_lesson
-            lesson = _fallback_lesson(title, description, subject, objectives, age)
-
+        lesson = await generate_lesson_content(
+            title=title,
+            description=description,
+            subject=subject,
+            objectives=objectives,
+            age=age,
+            activity_type=activity_type,
+        )
         lesson["block_index"] = req.block_index
         lesson["activity_type"] = activity_type
         lesson["objectives"] = objectives

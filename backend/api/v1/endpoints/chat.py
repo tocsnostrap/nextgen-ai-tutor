@@ -13,6 +13,7 @@ from ....conversational_ai import conversational_ai
 from ....core.database import get_db, ChatMessage
 from ....bkt_lite import bkt_lite
 from ....unified_adaptive_engine import record_chat_interaction, get_ai_memory_prompt, get_adaptation_context
+from .knowledge_library import detect_enthusiasm_topics, _get_or_create_profile, _upsert_passion_topic
 
 # Claude AI service — primary (Anthropic claude-opus-4-6 with adaptive thinking)
 from ....claude_ai_service import (
@@ -117,6 +118,29 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
     except Exception:
         ai_memory = ""
 
+    # ── Load child's interest profile for Nova context ───────────────────────
+    interest_context = ""
+    interest_topics: list = []
+    try:
+        interest_profile = await _get_or_create_profile(db, user_id)
+        top = sorted(
+            interest_profile.passion_topics or [],
+            key=lambda x: x.get("score", 0), reverse=True
+        )[:5]
+        custom = interest_profile.custom_interests or []
+        nova_mem = interest_profile.nova_memory or []
+        parts = []
+        if top:
+            parts.append("Passions: " + ", ".join(f"{t['emoji']} {t['topic']}" for t in top))
+        if custom:
+            parts.append("Self-chosen interests: " + ", ".join(f"{c.get('emoji','✨')} {c['topic']}" for c in custom[:3]))
+        if nova_mem:
+            parts.append("Nova remembers: " + "; ".join(nova_mem[:2]))
+        interest_context = "\n".join(parts)
+        interest_topics = [t["topic"] for t in top[:3]]
+    except Exception as e:
+        logger.warning("Could not load interest profile: %s", e)
+
     context = {
         "session_id": namespaced_session_id,
         "topic": topic,
@@ -127,6 +151,8 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
         "user_id": user_id,
         "teaching_strategy": "socratic" if socratic else "explain",
         "student_memory": ai_memory,
+        "interest_context": interest_context,
+        "student_interests": interest_topics,
     }
 
     history_stmt = (
@@ -221,6 +247,24 @@ async def send_message(request: ChatMessageRequest, user_id: str = Depends(get_c
     skill = result["concepts_covered"][0] if result.get("concepts_covered") else topic
     correct = result.get("difficulty_adjustment") != "decrease"
     bkt_update = bkt_lite.update(user_id, skill, correct)
+
+    # ── Enthusiasm detection → update knowledge library ──────────────────────
+    try:
+        detected_topics = detect_enthusiasm_topics(request.message)
+        if detected_topics:
+            int_profile = await _get_or_create_profile(db, user_id)
+            from datetime import datetime, timezone as tz
+            now = datetime.now(tz.utc).isoformat()
+            log = list(int_profile.enthusiasm_log or [])
+            for item in detected_topics:
+                _upsert_passion_topic(
+                    int_profile, item["topic"], item["emoji"],
+                    item["subject_area"], item["signal"]
+                )
+                log.insert(0, {"topic": item["topic"], "signal": item["signal"], "detected_at": now})
+            int_profile.enthusiasm_log = log[:100]
+    except Exception as e:
+        logger.warning("Enthusiasm detection failed: %s", e)
 
     msg_metadata = {"topic": topic, "difficulty": difficulty, "emotion": emotion}
     user_msg = ChatMessage(
