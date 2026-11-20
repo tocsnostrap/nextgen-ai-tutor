@@ -4,6 +4,8 @@ Status: **draft for sign-off. Nothing is built yet.**
 Base code: branch `claude/advance-ai-tutoring-platform-rPOYS` (newer than `main`).
 Working branch: `claude/keen-ramanujan-0xfo9j`.
 
+Companion document: `CODEBASE.md` is the full audit of the existing code, from reading it and running it.
+
 Research citations below are from memory and were not re-checked while writing this.
 Phase 0 includes verifying each one and recording the link in `docs/research.md`.
 
@@ -17,14 +19,15 @@ Phase 0 includes verifying each one and recording the link in `docs/research.md`
 | Curriculum | **England's National Curriculum**, Years 1–7 (Key Stages 1, 2 and the first year of 3). Scotland, Wales and Northern Ireland differ and are not covered |
 | Ages | **6–12** |
 | Subjects | English, maths, science, languages (Arabic, French, Spanish), art, cooking, life skills |
-| Voice | **Required from the first usable version.** Children talk to the tutor and hear it reply |
+| Voice | **Required from the first usable version.** Children talk to the tutor and hear it reply. The tutor is a very friendly woman with a British voice (section 16) |
+| Hosting | **Your Railway account**, in a new project of its own |
 | Approach | **Child-led** and **diverse** (section 4) |
 | Who it is for | Not a deciding factor. It is built safely either way (section 11) |
 
 Dropped from earlier drafts: ages 3–5, US curriculum. History and geography are added in school mode only, because a full school day needs them.
 
 Assumptions I made that you can change:
-- **Languages:** the parent picks one or more of Arabic, French and Spanish per child. Arabic is taught as Modern Standard Arabic, not a regional dialect, with a separate starting point for children who already speak it at home.
+- **Languages:** the parent picks one or more of Arabic, French and Spanish per child. Arabic is taught as Modern Standard Arabic (confirmed), with a separate starting point for children who already speak a dialect at home.
 - **Life skills** follows the PSHE Association programme of study (money, health, safety, emotions, relationships). Relationships and health topics are parent-controlled.
 
 ---
@@ -337,7 +340,7 @@ Each phase ends with a check that must pass before the next starts.
 
 | Phase | Work | Done when |
 |-------|------|-----------|
-| 0. Base | Make the feature branch the base; delete dead code; fix the deploy; add tests, CI and migrations; verify research citations and the curriculum licence | App starts from a clean checkout and deploys; tests run in CI |
+| 0. Base | Make the feature branch the base; delete dead code; close the security holes in `CODEBASE.md` section 4; remove invented numbers from the screen; deploy to a new Railway project with Postgres; add tests, CI and migrations; verify research citations and the curriculum licence | App deploys to Railway from a clean checkout; tests run in CI; each security probe in the audit now fails |
 | 1. Accounts | Parent and child accounts, real login, all state in Postgres | Two children on one parent account have separate records that survive a restart |
 | 2. Curriculum | Import maths and English for Years 1–7 as a graph; item bank with computed answers; placement | A new child finishes placement and gets a mastery map |
 | 3. Tutor | Learner record, tutor tools, the section 8 session flow in text, child-led choices, safety screening, test set | A scripted session runs end to end and the record updates correctly; tests pass |
@@ -381,17 +384,19 @@ Vendors bill in US dollars, so figures are in dollars; UK VAT may be added. AI f
 | Domain name | $10–15 a year | From memory, not checked |
 | **Total** | **about $130–365** | |
 
-### 15.2 Fixed monthly running cost
+### 15.2 Fixed monthly running cost (Railway)
 
-| Item | Cost |
-|------|------|
-| Web server (Render Starter) | $7 |
-| Background worker | $7 |
-| Postgres database | $7–19 |
-| Email, error tracking, file storage | $0 on free tiers (from memory) |
-| **Total** | **about $21–33** |
+Railway bills by the minute for what runs: $20 per virtual CPU and $10 per GB of memory per month, with the plan fee ($5 Hobby, $20 Pro) counting towards usage. The tutor adds three small services to your account.
 
-The free Render plan in the current `render.yaml` sleeps when idle and cannot run a background worker, so it is not usable for this.
+| Item | Estimated cost |
+|------|----------------|
+| Web server | $4–8 |
+| Background worker | $2–5 |
+| Postgres database, with storage | $4–8 |
+| Email, error tracking | $0 on free tiers (from memory) |
+| **Total added to your Railway bill** | **about $10–20** |
+
+These are my estimates for a family-sized load; Railway's usage page will show the real figure within days of deploying. Daily database backups must be switched on; a learner record that is lost cannot be rebuilt.
 
 ### 15.3 AI and voice cost per child per month
 
@@ -408,9 +413,150 @@ Each extra tutor-mode session adds about $1.25–2.50 including voice.
 
 ### 15.4 Worked example
 
-Two children, aged 7 and 10, with mid-priced voice, after about $130–365 of one-off setup:
+Two children, aged 7 and 10, after about $130–365 of one-off setup. Voice is budgeted in the upper half of its range, because a natural British voice that also handles Arabic is at the dearer end:
 
 | | Hosting | AI | Voice | Total a month |
 |---|---------|----|-------|---------------|
-| Both in tutor mode | $28 | $60–70 | $35–40 | **about $125–140** |
-| Both in school mode | $28 | $140–165 | $90–95 | **about $260–290** |
+| Both in tutor mode | $15 | $60–70 | $45–55 | **about $120–140** |
+| Both in school mode | $15 | $140–165 | $110–130 | **about $265–310** |
+
+---
+
+## 16. The tutor: who she is and how she sounds
+
+### 16.1 Character
+
+The tutor keeps the name **Nova**. She is one consistent person across every subject, session and mode.
+
+| Trait | What the child experiences |
+|-------|----------------------------|
+| Warm | Greets the child by name, remembers yesterday, notices effort |
+| Patient | Never sighs, never rushes, never says "that's easy" |
+| Playful | Light humour, enjoys the child's interests, a little silliness with younger children |
+| Curious | Asks what the child thinks before explaining |
+| Honest | Says "not quite" plainly and kindly; does not pretend a wrong answer is right |
+| Calm | When a child is upset or silly, she slows down and lowers the stakes |
+
+Rules she always follows:
+- British English: "maths", "brilliant", "have a go", pounds and pence, metres, UK place names.
+- Short sentences for ages 6–8; fuller ones for 9–12.
+- Praise names the effort or method ("you checked your answer, that's what mathematicians do"), not cleverness.
+- After "I don't know", she offers a smaller step, never the answer.
+- She never shames, compares children, or uses sarcasm.
+- She says she is an AI if asked, and does not claim to have feelings or to be the child's friend in place of real people. She encourages the child to share things with their parent.
+
+### 16.2 Voice
+
+- **A British woman's voice: warm, clear, unhurried.** Chosen by listening tests with you and the children across several candidate voices, since "friendly" is a judgement only you can make.
+- The same voice in every session, so she is recognisably one person.
+- Speaking pace slows for ages 6–8 and for new vocabulary.
+- **Language lessons:** a British voice reading Arabic, French or Spanish would model the wrong accent. Target-language words and sentences are spoken in a native-quality voice for that language. Whether that is Nova's own voice (some services keep one voice across languages) or a second "language friend" character is decided in the voice phase by having a native speaker listen.
+- **Phonics:** speech services are unreliable at saying single letter sounds such as a pure "k" or "mm". The 44 English sounds are recorded once as audio clips and played, not generated.
+- The time between the child finishing speaking and Nova starting must be under about a second and a half, or it stops feeling like a conversation. This is measured, and it is the main test when choosing vendors.
+
+### 16.3 How she looks
+
+The current mascot is a small robot with five expressions. A robot does not match a human woman's voice. The default is to replace it with a friendly illustrated woman with the same five expressions; the robot can stay in the game world. Say so if you would rather keep the robot.
+
+---
+
+## 17. Worked example: one lesson, planned and taught
+
+A made-up child, to show every step. Amira is 8, in Year 3, loves football, speaks Arabic at home, tutor mode.
+
+### 17.1 What the planner knows on Sunday night
+
+- Mastered: halves and quarters of shapes (Year 2). Counting in 2s, 5s, 10s. Sharing into equal groups.
+- Shaky: 3 times table (mastery 0.6).
+- Next on the curriculum map: the Year 3 objective "recognise, find and write fractions of a set of objects: unit fractions with small denominators".
+- Due for review: telling the time to 5 minutes (last seen 7 days ago); 3 times table.
+- Wonder list: "Why do footballs have hexagons?"
+- Last session note: "Gets flustered when timed. Responds well to drawing it out."
+
+### 17.2 The session plan it writes for Monday (25 minutes)
+
+| Part | Content |
+|------|---------|
+| Objective | Find a unit fraction of a set of objects |
+| Success criteria | Shares objects into equal groups; says how many in one group; writes "1/4 of 12 = 3" |
+| Context | A football squad and match stickers |
+| Recall (4 min) | Two clock questions; three from the 3 times table, untimed |
+| Homework review (2 min) | One error from Friday: wrote 13 − 8 = 6 |
+| Teach (5 min) | Nova draws 12 footballs, shares them into 4 bags, circles one bag: "one quarter of 12 is 3" |
+| Together (5 min) | 1/3 of 9 stickers; 1/2 of 10 players |
+| Alone (6 min) | Five items, such as 1/4 of 8 and 1/5 of 10, drawn or with counters |
+| Exit questions (2 min) | 1/3 of 12; 1/4 of 20; "Is 1/2 of 8 bigger than 1/4 of 8? How do you know?" |
+| Misconceptions to watch | Using the bottom number as the answer ("1/4 of 12 is 4"); unequal groups |
+| If she flies through it | 1/4 of 12 and 2/4 of 12: what do you notice? |
+| Homework (10 min) | Six fraction-of-a-set questions, three 3-times-table questions, one clock question |
+
+Code checks every answer in the plan before it is saved.
+
+### 17.3 How it is taught (excerpt)
+
+> **Nova:** Hello Amira! How are you feeling today? Tap a face for me.
+> *(Amira taps "okay".)*
+> **Nova:** Okay is fine. Did you watch the match on Saturday?
+> **Amira:** Yeah, we won 3–1!
+> **Nova:** Brilliant! We're going to use football today. First, a quick warm-up, no rush at all. What are three lots of four?
+>
+> *(Later, in the "together" part. Nova has drawn 9 stickers.)*
+>
+> **Nova:** Here are 9 stickers. I want to give one third to you. What should we do first?
+> **Amira:** Um… give me three?
+> **Nova:** You might be right! How could we check, using the drawing?
+> **Amira:** I don't know.
+> **Nova:** That's okay. Thirds means how many equal groups?
+> **Amira:** Three.
+> **Nova:** Yes. Have a go at sharing the stickers into three groups on the board.
+> *(Amira drags them: 3, 3, 3.)*
+> **Nova:** Lovely, they're equal. So one third of 9 is…?
+> **Amira:** Three!
+> **Nova:** Three. You shared them equally and counted one group. That's exactly the method.
+>
+> *(An "alone" item: 1/4 of 8. Amira answers 4.)*
+>
+> **Nova:** Not quite. I think I can see what happened. Draw it for me: 8 footballs into 4 bags.
+> *(She draws 2 in each bag.)*
+> **Amira:** Oh. It's 2.
+> **Nova:** It is. The 4 told us how many bags, not how many in each bag. Well spotted.
+
+What Nova did, in order: asked before telling; gave the smallest hint that would work; made the child do the sharing; named the misconception once it showed; praised the method.
+
+### 17.4 What is recorded afterwards
+
+- Mastery of the objective moves from 0.20 to 0.71. Not yet mastered.
+- Misconception logged: "uses the denominator as the answer", seen once, corrected by drawing.
+- Exit questions: 2 of 3 correct; the comparison question was wrong.
+- Session note: "Drawing bags works. Still unsure comparing 1/2 and 1/4 of the same set."
+- Review dates set: fractions of a set tomorrow; 3 times table in 3 days.
+- Wonder list item about hexagons is matched to a Year 3 shape objective three weeks ahead.
+
+### 17.5 How Tuesday's plan changes
+
+Exit questions were not fully passed, so the planner does not move on. Tuesday's English session opens with two fraction-of-a-set recall questions, and Thursday's maths session re-teaches comparing unit fractions using a fraction wall, a different picture from Monday's bags. If Thursday's exit questions pass, the following week moves to non-unit fractions; if not, it steps back to equal sharing.
+
+---
+
+## 18. Where this could fail
+
+Ordered by how likely and how damaging I judge each to be. Each has the sign we would see first and what is done about it.
+
+| # | Failure | First sign | What is done |
+|---|---------|-----------|--------------|
+| 1 | **Too much scope.** Seven subjects, three languages, two modes, seven year groups is thousands of objectives. The build stalls half-done everywhere | A phase runs long with no working session at the end | Strict order. Maths and English for one year group work end to end, with voice, before anything is widened |
+| 2 | **Voice feels wrong.** Slow replies, mishearing children, a voice the children do not warm to | Children start tapping instead of talking; reply delay over 1.5 seconds | Vendors chosen by test on your children's real speech; delay measured in every session; tap always available |
+| 3 | **Nova teaches something wrong** | A parent spots an error in a transcript | Maths answers computed by code; item bank checked; recorded phonics sounds; test set run before every change; a "report this" button on every message |
+| 4 | **Children stop wanting to use it** after the novelty fades, usually in weeks 2–4 | Sessions cut short; mood check-ins drop | Child-led context and projects; short sessions; the game world as reward only; weekly look at completion |
+| 5 | **Children game it.** Guessing by tapping, asking Nova to do the homework, long silences | Very fast wrong-then-right answers; mastery rising without exit questions passing | Exit questions without hints decide progress; delayed checks; guessing patterns flagged to the parent |
+| 6 | **"Mastered" is not true.** The model says a skill is secure and a school test shows it is not | Delayed checks failing on "mastered" skills | Mastery needs a pass a week later; a past-paper style check each half term compares our picture with reality |
+| 7 | **Content quality is uneven.** Maths is strong, but art feedback or Arabic lessons are thin | Parent thumbs-down clusters on one subject | Each subject gets its own test conversations and its own sign-off from you before it is switched on |
+| 8 | **Cost runs above the estimates,** especially in school mode | Monthly spend more than 2x the table in section 15 | Spend shown per child on the parent page; caps per day; cheaper model for routine marking once measured |
+| 9 | **A safety incident:** an inappropriate reply, or a child disclosing something serious | A screening flag | Screening both ways; parent alert; full transcripts; nothing goes live before section 11 passes |
+| 10 | **Data loss or a bad deploy** wipes progress | A failed migration or Railway outage | Migrations, daily backups, a staging copy on Railway, restore tested once before real use |
+| 11 | **Parents carry too much:** photos, cooking supervision, off-screen blocks in school mode | Off-screen tasks left unconfirmed | Each parent task takes one tap; a weekly summary of what was asked of them; school mode can run with fewer off-screen blocks |
+| 12 | **Lost connection mid-lesson** | Sessions ending without a summary | Session state saved after every step, so a child can rejoin where they stopped |
+| 13 | **The existing code slows us down** more than it helps | Time spent fixing old modules instead of building | `CODEBASE.md` section 5 already marks what is replaced; old modules are deleted, not repaired |
+| 14 | **A model or vendor changes** and behaviour shifts | Test-set scores drop after an update | Model versions pinned in config; the test set runs before any switch |
+
+One limit to state plainly: I can prove the software works. I cannot prove in advance that children learn more with it. Only the real-use phase shows that, which is why it measures delayed checks and half-termly papers and not just time spent.
