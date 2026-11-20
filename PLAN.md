@@ -1,13 +1,13 @@
 # NextGen AI Tutor — Build Plan
 
-Status: **draft for sign-off. Nothing is built yet.**
+Status: **approved; building. Phase 0 is done** (2026-11-20). Next: phase 1, accounts.
+Preview: https://web-production-19ef5bd5.up.railway.app (demo mode, no real data, Railway project `nextgen-ai-tutor`).
 Base code: branch `claude/advance-ai-tutoring-platform-rPOYS` (newer than `main`).
 Working branch: `claude/keen-ramanujan-0xfo9j`.
 
 Companion document: `CODEBASE.md` is the full audit of the existing code, from reading it and running it.
 
-Research citations below are from memory and were not re-checked while writing this.
-Phase 0 includes verifying each one and recording the link in `docs/research.md`.
+Research citations were checked against the web on 2026-11-20. `docs/research.md` has the full citation, a link and a verdict for each one. Twelve items needed softer wording or a corrected citation, applied below; none was unsupported.
 
 ---
 
@@ -28,7 +28,7 @@ Dropped from earlier drafts: ages 3–5, US curriculum. History and geography ar
 
 Assumptions I made that you can change:
 - **Languages:** the parent picks one or more of Arabic, French and Spanish per child. Arabic is taught as Modern Standard Arabic (confirmed), with a separate starting point for children who already speak a dialect at home.
-- **Life skills** follows the PSHE Association programme of study (money, health, safety, emotions, relationships). Relationships and health topics are parent-controlled.
+- **Life skills** covers money, health, safety, emotions and relationships, based on the Department for Education's statutory guidance. The PSHE Association's programme, which I first proposed, is all-rights-reserved and cannot be copied or adapted without written permission. Relationships and health topics are parent-controlled.
 
 ---
 
@@ -54,18 +54,20 @@ The games and RPG world in the current code stay as a reward area. They stop bei
 
 | Principle | Source | What the product does |
 |-----------|--------|-----------------------|
-| Daily review, small steps, guided practice, check understanding, aim for about 80% success | Rosenshine, *Principles of Instruction* (2012) | Fixed session structure in section 8 |
-| Working memory is small; show worked examples, then fade them | Sweller, cognitive load theory | One new idea per session. "I do, we do, you do" |
+| Daily review, small steps, guided practice, check understanding; about 80% success as a rule of thumb | Rosenshine, *Principles of Instruction* (2012) | Fixed session structure in section 8 |
+| Novices learn more from worked examples than from unaided problem solving; fade the steps, then stop once the child is fluent | Sweller & Cooper (1985); Renkl & Atkinson (2003); Kalyuga et al. (2003) | One new idea per session. "I do, we do, you do" |
 | Being quizzed beats re-reading | Roediger & Karpicke (2006) | Every session opens with recall questions |
 | Spread practice out over time | Cepeda et al. (2006) | Review queue with expanding gaps |
-| Mix problem types once basics are in | Rohrer & Taylor (2007) | Homework mixes old and new skills |
+| Mix problem types once basics are in. Shown with university students; evidence for primary age is thinner | Rohrer & Taylor (2007) | Homework mixes old and new skills, in maths, after each skill is taught |
 | Teach just beyond what the child can do alone, then withdraw support | Vygotsky; Wood, Bruner & Ross (1976) | Hint ladder: prompt, cue, partial step, worked example |
-| Feedback must say what to do next | Hattie & Timperley (2007); Black & Wiliam (1998) | Marking returns a next step, not a score |
-| Learners gain most when they produce and explain | Chi & Wylie, ICAP (2014) | Child explains back before the tutor moves on |
+| Feedback must be about the task and say what to do next. Checking understanding as you go helps, by less than first claimed | Hattie & Timperley (2007); Black & Wiliam (1998); Kingston & Nash (2011) | Marking returns a next step, not a score |
+| Learners are predicted to gain most when they produce and explain. A framework used as a design guide, not proof | Chi & Wylie, ICAP (2014) | Child explains back before the tutor moves on |
 | Tutoring works, and structured computer tutors come close to human ones | Bloom (1984); VanLehn (2011) | The reason to build this |
-| Tracking skill mastery from right/wrong answers | Corbett & Anderson (1995) | Already in the code as `bkt_lite`; kept and persisted |
-| AI that hands over answers harms later performance; guard-railed tutors do not | Bastani et al. (2024); Kestin et al. (2024) | The tutor never gives the final answer to graded work |
-| Choice and interest raise motivation and persistence | Deci & Ryan, self-determination theory; Hidi & Renninger (2006) | Child-led design in section 4 |
+| Tracking skill mastery from right/wrong answers (knowledge tracing) | Corbett & Anderson (1995) | Already in the code as `bkt_lite`; kept and persisted |
+| AI that hands over answers harmed later exam scores; a guard-railed tutor avoided the harm but did not beat no AI. A well-designed AI tutor beat active classroom teaching over two university physics lessons | Bastani et al. (2025), *PNAS*; Kestin et al. (2025), *Scientific Reports* | The tutor never gives the final answer to graded work |
+| A few real choices raise motivation and effort; more choices add little | Ryan & Deci (2000); Patall, Cooper & Robinson (2008); Hidi & Renninger (2006) | Child-led design in section 4 |
+
+Several of these studies used secondary or university students. They are applied to ages 6–12 as reasonable extrapolations and checked against our own usage data.
 
 UK-specific sources used for subject content: Education Endowment Foundation guidance reports; Ofsted subject research reviews; the DfE Reading Framework; NCETM teaching-for-mastery materials for maths.
 
@@ -95,7 +97,7 @@ UK-specific sources used for subject content: Education Endowment Foundation gui
 
 ### 4.1 Child-led
 
-A caution first: for skills a child does not yet have, such as phonics or column subtraction, the research favours direct teaching over discovery (Kirschner, Sweller & Clark, 2006). So the tutor decides **what skill** comes next, and the child leads on everything around it.
+A caution first: for skills a child does not yet have, such as phonics or column subtraction, the stronger argument favours guided teaching over unguided discovery (Kirschner, Sweller & Clark, 2006; a contested review, and it does not count against well-supported enquiry). So the tutor decides **what skill** comes next, and the child leads on everything around it.
 
 | The child chooses | How |
 |-------------------|-----|
@@ -123,7 +125,7 @@ The evidence that diverse content raises attainment is thinner than the evidence
 
 ## 5. Curriculum
 
-1. Import the National Curriculum programmes of study for Years 1–7, statement by statement. It is Crown copyright under the Open Government Licence; the licence terms are confirmed in phase 0.
+1. Import the National Curriculum programmes of study for Years 1–7, statement by statement. It is Crown copyright under the Open Government Licence v3.0 (confirmed): reuse is allowed with an attribution line, no government logos, and no implied endorsement. A revised curriculum is reported for first teaching in 2028, so the import is built to be re-run.
 2. Store it as a **prerequisite graph**: each objective lists what must be known first.
 3. Each objective carries success criteria, common misconceptions, representations to use, and a bank of checked practice items.
 4. The 122 hand-written standards in the current code are US-style K–6. They are mapped to National Curriculum statements where they match and dropped where they do not.
@@ -227,7 +229,7 @@ A weekday plan that replaces a school day. Most of it is **off screen**: the tut
 
 Example day, ages 9–12: maths with the tutor (35 min), maths practice on paper (25 min), break, English with the tutor (35 min), reading a book (30 min), lunch, language (20 min), science investigation off screen (45 min), show-and-reflect with the tutor (15 min).
 
-School mode also produces attendance and progress records. Home education is legal in England and parents are not required to follow the National Curriculum, but the parent remains legally responsible for the child receiving a suitable full-time education; the product supports that and does not take it over.
+School mode also produces attendance and progress records. Home education is legal in England and parents are not required to follow the National Curriculum (confirmed). The Children's Wellbeing and Schools Act 2026 adds local-authority registers of children not in school; check what applies to you before withdrawing a child. The parent remains legally responsible for the child receiving a suitable full-time education; the product supports that and does not take it over.
 
 ---
 
@@ -674,8 +676,8 @@ Things the plan above did not cover. Each has a proposed default; the first grou
 |---|-----|------------------|
 | 21 | **No qualified person checks the teaching.** Neither of us is a UK primary teacher | A primary teacher reviews sample lessons and the item bank for each subject before it goes live, and a native speaker reviews Arabic, French and Spanish. Paid by the hour; not yet costed |
 | 22 | **Children do not try it until the end** | Your children try a 10-minute session at the end of phase 3 and again at phase 4, not only in phase 11 |
-| 23 | **No national yardstick** | Past SATs and phonics-check papers, which are published free, used for the half-termly checks |
-| 24 | **Research citations and the curriculum licence are still unverified** | First task of phase 0, unchanged |
+| 23 | **No national yardstick** | Past SATs and phonics-check papers, published free under the Open Government Licence. The reading papers contain third-party texts that are excluded from the licence, so maths and grammar papers are used directly and reading passages are our own |
+| 24 | ~~Research citations and the curriculum licence are still unverified~~ | Done: `docs/research.md` |
 
 ### 20.5 Missing from running it
 
